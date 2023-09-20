@@ -6,7 +6,7 @@ uniform float uTime;
 
 #define PI 3.14159265358979
 
-vec2 m = vec2(.4,.4);
+vec2 m = vec2(.7,.7);
 
 float hash( in vec2 p ) 
 {
