@@ -1,10 +1,11 @@
 "use client";
 
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import TestSphere from "./test/mesh/test";
 import DiscoBrain from "./discoBrain/mesh/discoBrain";
+import WarpMesh from "./test/mesh/warpMesh";
 
 const SphereCanvas = () => {
   return (
@@ -13,8 +14,10 @@ const SphereCanvas = () => {
       <Suspense fallback={null}>
         {/* <TestSphere /> */}
         <DiscoBrain />
+        {/* <WarpMesh /> */}
       </Suspense>
       <OrbitControls />
+      <Stats />
     </Canvas>
   );
 };
