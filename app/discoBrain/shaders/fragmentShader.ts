@@ -14,9 +14,9 @@ uniform float uNoise;
 #define MOD3 vec3(.1031,.11369,.13787)
 
 vec3 hash33(vec3 p3) {
-	p3 = fract(p3 * MOD3);
+	p3 = fract(p3 * MOD3 /10.);
     p3 += dot(p3, p3.yxz+19.19);
-    return -1.0 + 2.0 * fract(vec3(((p3.y+p3.z)*p3.x, (p3.x+p3.z)*p3.y, p3.x + p3.y)*p3.z));
+    return -1.0 + 2.0 * fract(vec3((p3.y+p3.z)*p3.x, (p3.x+p3.z)*p3.y, (p3.x + p3.y)*p3.z));
 }
 
 float pnoise(vec3 p) {
@@ -44,15 +44,15 @@ float pnoise(vec3 p) {
 }
 
 void main() {
-    float pat = pnoise(vec3(vUv * uNoise , sin(uTime / 2.) * 1.4 )) * uDisplace ;
-    float proximity = abs(vUv.x - (.5 + sin(uTime)/(12. * uSpread ) ));
+    float pat = pnoise(vec3(vUv * uNoise , sin(uTime / 2.0) * 1.5 )) * uDisplace ;
+    float proximity = abs(vUv.y - (.5 + sin(uTime)/(12. * uSpread ) ));
 
     vec3 full = pat * vec3(clamp(.23 * uSpread  - proximity , 0.5, 1.));
     vec3 newPosition = vPosition + vNormal * full; 
     vec3 purpleColor = vec3(0.898, 0.0039, 0.0314) + vec3(0.8941, 0.0941, 0.051);
     vec3 color = -vec3(pnoise(vec3(1. - newPosition * 10. ))*40.) * (.01 -full) * purpleColor;
-  gl_FragColor = vec4(color , 1.);
-//   gl_FragColor = vec4(0.,1.,0. , 1.);
+//   gl_FragColor = vec4(color , 1.);
+  gl_FragColor = vec4(vec2(sin(vUv.y)),1. , 1.0);
 }
 `;
 

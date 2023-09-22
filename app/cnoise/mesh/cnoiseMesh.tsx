@@ -3,23 +3,20 @@ import { extend, useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import VertexShader from "../shaders/vertexShader";
 import FragmentShader from "../shaders/fragmentShader";
-import { Vector2 } from "three";
+import * as THREE from "three";
 
-const DiscoMaterial = shaderMaterial(
+const SphereMaterial = shaderMaterial(
   {
     uTime: 0,
-    uResolution: new Vector2(),
-    uDisplace: 2,
-    uSpread: 1.2,
-    uNoise: 16,
+    randomFactors: [1, 1, 1],
   },
   VertexShader,
   FragmentShader
 );
 
-extend({ DiscoMaterial });
+extend({ SphereMaterial });
 
-const DiscoBrain = () => {
+const CnoiseMesh = () => {
   const mesh = useRef<any>();
 
   const ROTATION_SPEED = 0.02;
@@ -35,12 +32,13 @@ const DiscoBrain = () => {
 
   return (
     <mesh position={[0, 0, 0]} ref={mesh} scale={0.5}>
-      <icosahedronGeometry args={[5, 10]} />
+      <sphereGeometry args={[5, 128, 128]} />
+      {/* <icosahedronGeometry args={[5, 10]} /> */}
       {/* <boxGeometry args={[5, 5, 5]} /> */}
       {/* <torusKnotGeometry args={[10, 1, 100, 20, 9, 10]} /> */}
-      {/* <discoMaterial /> */}
-      <meshStandardMaterial color={"red"} />
+      <sphereMaterial />
+      {/* <meshStandardMaterial color={"red"} /> */}
     </mesh>
   );
 };
-export default DiscoBrain;
+export default CnoiseMesh;

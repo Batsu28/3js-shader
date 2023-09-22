@@ -5,7 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import TestSphere from "./test/mesh/test";
 import DiscoBrain from "./discoBrain/mesh/discoBrain";
-import WarpMesh from "./test/mesh/warpMesh";
+import CnoiseMesh from "./cnoise/mesh/cnoiseMesh";
 
 const SphereCanvas = () => {
   return (
@@ -13,8 +13,8 @@ const SphereCanvas = () => {
       <ambientLight intensity={1} />
       <Suspense fallback={null}>
         {/* <TestSphere /> */}
-        <DiscoBrain />
-        {/* <WarpMesh /> */}
+        {/* <DiscoBrain /> */}
+        <CnoiseMesh />
       </Suspense>
       <OrbitControls />
       <Stats />

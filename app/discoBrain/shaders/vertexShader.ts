@@ -15,9 +15,9 @@ uniform float uNoise;
 #define MOD3 vec3(.1031,.11369,.13787)
 
 vec3 hash33(vec3 p3) {
-	p3 = fract(p3 * MOD3);
-    p3 += dot(p3, p3.yxz+19.19);
-    return -1.0 + 2.0 * fract(vec3(((p3.y+p3.z)*p3.x, (p3.x+p3.z)*p3.y, p3.x + p3.y)*p3.z));
+	p3 = fract(p3 + MOD3 * 10.);
+    p3 += dot(p3, p3 + 19.19);
+    return 1.0 + 2.0 * fract(vec3(((p3.y+p3.z)*p3.x, (p3.x+p3.z)*p3.y, p3.x + p3.y)*p3.z));
 }
 float pnoise(vec3 p) {
     vec3 pi = floor(p);
@@ -48,7 +48,7 @@ void main() {
     vPosition = position;
     vNormal = normal;
     
-    float pat = pnoise(vec3(vUv * uNoise, (uTime) / 1.5 )) * uDisplace ;
+    float pat = pnoise(vec3(vUv * uNoise, (uTime) / 1.5 )) * sin(uTime) ;
     float proximity = abs(vUv.x - (.5 + (uTime)/(12. * uSpread ) ));
 
     vec3 full = pat * vec3((clamp(.9 * uSpread  + proximity , 0.5, 1.)));
