@@ -9,7 +9,7 @@ import CnoiseMesh from "./cnoise/mesh/cnoiseMesh";
 
 const SphereCanvas = () => {
   return (
-    <Canvas camera={{ position: [0, 0, 10] }}>
+    <Canvas camera={{ position: [10, 0, 10] }}>
       <ambientLight intensity={1} />
       <Suspense fallback={null}>
         {/* <TestSphere /> */}

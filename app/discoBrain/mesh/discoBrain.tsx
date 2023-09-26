@@ -29,7 +29,7 @@ const DiscoBrain = () => {
       const elapsedTime = clock.getElapsedTime();
 
       mesh.current.material.uniforms.uTime.value = elapsedTime;
-      mesh.current.rotation.y -= 0.002;
+      mesh.current.rotation.z -= 0.002;
     }
   });
 
@@ -38,8 +38,8 @@ const DiscoBrain = () => {
       <icosahedronGeometry args={[5, 10]} />
       {/* <boxGeometry args={[5, 5, 5]} /> */}
       {/* <torusKnotGeometry args={[10, 1, 100, 20, 9, 10]} /> */}
-      {/* <discoMaterial /> */}
-      <meshStandardMaterial color={"red"} />
+      <discoMaterial />
+      {/* <meshStandardMaterial color={"red"} /> */}
     </mesh>
   );
 };
