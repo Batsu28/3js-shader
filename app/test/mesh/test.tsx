@@ -4,9 +4,9 @@ import { useRef } from "react";
 import VertexShader from "../shaders/vertexShader";
 import FragmentShader from "../shaders/fragmentShader";
 
-const TestMaterial = shaderMaterial({ uTime: 0 }, VertexShader, FragmentShader);
-
-extend({ TestMaterial });
+const uniforms = {
+  uTime: { value: 0 },
+};
 
 const TestSphere = () => {
   const mesh = useRef<any>();
@@ -21,7 +21,11 @@ const TestSphere = () => {
   return (
     <mesh position={[0, 0, 0]} ref={mesh}>
       <sphereGeometry args={[1, 128, 128]} />
-      <testMaterial />
+      <shaderMaterial
+        uniforms={uniforms}
+        vertexShader={VertexShader}
+        fragmentShader={FragmentShader}
+      />
     </mesh>
   );
 };
