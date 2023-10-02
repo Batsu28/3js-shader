@@ -1,4 +1,4 @@
-import SphereCanvas from "./sphereCanvas";
+import SphereCanvas from "./canvas/sphereCanvas";
 
 const Home = () => {
   return (
