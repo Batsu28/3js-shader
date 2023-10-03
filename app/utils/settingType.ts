@@ -1,4 +1,4 @@
-import { Vector3 } from "three";
+import { Euler, Vector3 } from "three";
 
 interface SettingType {
   material: {
@@ -18,10 +18,16 @@ interface SettingType {
     numberOfWaves: number;
     surfaceSpeed: number;
     surfacePoleAmount: number;
+    fixNormals?: boolean;
   };
   lights: LightType[];
   bg: string;
   map: string;
+  ambient: number;
+  geometry: {
+    scale: number;
+    rotate: Euler;
+  };
 }
 
 interface LightType {
