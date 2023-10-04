@@ -1,19 +1,20 @@
 import { useMemo, useState } from "react";
-import BlobSetting from "../utils/blobSettings";
-import { useGesture } from "@use-gesture/react";
+import { BlobSetting, Titles } from "../utils/blobSettings";
 import { useSpring } from "@react-spring/web";
 
 const useBlob = () => {
   const [number, setNumber] = useState(0);
-  // let number = 0;
-  const length = BlobSetting.length;
-  const setting = useMemo(() => BlobSetting[number], [number]);
+
+  const length = Titles.length;
+  const setting = useMemo(() => BlobSetting[Titles[number]], [number]);
 
   const [{ background }, api] = useSpring(() => ({
     background: setting.bg,
   }));
 
-  const clickHandler = () => {
+  const clickHandler = (e: any) => {
+    console.log(e.deltaMode);
+    e.deltaMode = 10000;
     if (number < length - 1) {
       setNumber(number + 1);
     } else {

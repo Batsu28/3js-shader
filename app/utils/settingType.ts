@@ -1,32 +1,34 @@
 import { Euler, Vector3 } from "three";
 
 interface SettingType {
-  material: {
-    roughness: number;
-    metalness: number;
-    envMapIntensity: number;
-    clearcoat: number;
-    clearcoatRoughness: number;
-    transmission: number;
-    color: string;
-    distort: number;
-    frequency: number;
-    speed: number;
-    gooPoleAmount: number;
-    surfaceDistort: number;
-    surfaceFrequency: number;
-    numberOfWaves: number;
-    surfaceSpeed: number;
-    surfacePoleAmount: number;
-    fixNormals?: boolean;
-  };
-  lights: LightType[];
-  bg: string;
-  map: string;
-  ambient: number;
-  geometry: {
-    scale: number;
-    rotate: Euler;
+  [index: string]: {
+    material: {
+      roughness: number;
+      metalness: number;
+      envMapIntensity: number;
+      clearcoat: number;
+      clearcoatRoughness: number;
+      transmission: number;
+      color: string;
+      distort: number;
+      frequency: number;
+      speed: number;
+      gooPoleAmount: number;
+      surfaceDistort: number;
+      surfaceFrequency: number;
+      numberOfWaves: number;
+      surfaceSpeed: number;
+      surfacePoleAmount: number;
+      fixNormals?: boolean;
+    };
+    lights: LightType[];
+    bg: string;
+    map: string;
+    ambient: number;
+    geometry: {
+      scale: number;
+      rotate: Euler;
+    };
   };
 }
 

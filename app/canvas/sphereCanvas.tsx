@@ -6,20 +6,15 @@ import { Suspense, useRef } from "react";
 import Blob from "./blobMesh/blob";
 import useBlob from "../hooks/useBlob";
 import Lights from "./light";
-import { animated, useSpring } from "@react-spring/web";
-import { useGesture } from "@use-gesture/react";
+import { animated } from "@react-spring/web";
+import TextCarousel from "./titles/title";
+import { Titles } from "../utils/blobSettings";
 
 const SphereCanvas = () => {
-  const {
-    background,
-    clickHandler,
-    bg,
-    lights,
-    material,
-    map,
-    geometry,
-    ambient,
-  } = useBlob();
+  const { clickHandler, bg, lights, material, map, geometry, ambient } =
+    useBlob();
+
+  const textRef = useRef<any>();
 
   return (
     <animated.div
@@ -31,27 +26,22 @@ const SphereCanvas = () => {
       }}
       onClick={clickHandler}
     >
-      {/* <div
-        onClick={decrement}
-        className="w-1/2 h-full absolute top-0 left-0 z-10 text-center"
+      <Canvas
+        camera={{ position: [0, 0, 4], fov: 50, near: 0.1, zoom: 1 }}
+        dpr={1}
       >
-        -
-      </div> */}
-      <Canvas camera={{ position: [0, 0, 3] }} dpr={1}>
         <ambientLight intensity={ambient} color={"white"} />
         <Lights lights={lights} />
         <Suspense fallback={null}>
           <Blob material={material} map={map} geometry={geometry} />
+          {/* {Titles.map((_, i) => (
+            <TextCarousel key={i} num={i} />
+          ))} */}
         </Suspense>
         <Stats />
-        <Environment preset="apartment"></Environment>
+        <OrbitControls />
+        <Environment preset="studio"></Environment>
       </Canvas>
-      {/* <div
-        onClick={increment}
-        className="w-1/2 h-full absolute top-0 right-0 z-10 text-center"
-      >
-        +
-      </div> */}
     </animated.div>
   );
 };
