@@ -1,108 +1,93 @@
+import React, { useState, useEffect, useRef } from "react";
+import { useGesture } from "@use-gesture/react";
+import { useSpring } from "@react-spring/web";
+import { Canvas, useFrame } from "@react-three/fiber";
 import {
-  useState,
-  memo,
-  useEffect,
-  useRef,
-  forwardRef,
-  useCallback,
-} from "react";
-import { Text, shaderMaterial } from "@react-three/drei";
-import { MathUtils, Color, DoubleSide, FrontSide } from "three";
-import { useThree, useFrame, extend } from "@react-three/fiber";
-import { Titles } from "@/app/utils/blobSettings";
+  PerspectiveCamera,
+  RenderTexture,
+  Text,
+  shaderMaterial,
+} from "@react-three/drei";
 
-const uniforms = {
+// **Shader**
+const VertexShader = `
+  uniform float time;
+  varying vec3 vPosition;
+
+  void main() {
+    vPosition = position;
+    float twist = sin(time * 0.5) * 0.1;
+    float rotation = vPosition.x * twist;
+    vPosition.x = vPosition.x * cos(rotation) - vPosition.z * sin(rotation);
+    vPosition.z = vPosition.z * cos(rotation) + vPosition.x * sin(rotation);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(vPosition, 1.0);
+  }
+`;
+const FragmentShader = `
+  uniform float time;
+  varying vec3 vPosition;
+
+  void main() {
+    gl_FragColor = vec4(0.0, 1.0, 1.0, 1.0);
+  }
+`;
+
+const uniform = {
   time: { value: 0 },
-  color: { value: new Color(1, 1, 1) },
-  opacity: { value: 1 },
-  fulltime: { value: 0 },
-  heightFactor: { value: 1 },
 };
 
-const vertexShader = /*glsl*/ `
-    uniform float fulltime;
-    uniform float heightFactor;
-  
-    #define M_PI 3.1415926538
-  
-    vec3 rotateAxis(vec3 p, vec3 axis, float angle) {
-        return mix(dot(axis, p)*axis, p, cos(angle)) + cross(axis,p)*sin(angle);
-    }
-  
-    void main() {
-        vec3 pos = position;
-  
-        float progress = clamp(fulltime, 0.0, 1.0);
-  
-        float twistAmount = M_PI * 2.;
-        float direction = sign(cos(M_PI * progress));
-    
-        float twirlPeriod = sin(progress * M_PI*2.);
-    
-        float rotateAngle = -direction * pow(sin(progress * M_PI), 1.5) * twistAmount;
-        float twirlAngle = -sin(uv.x -.5) * pow(twirlPeriod, 2.0) * -4.;
-        pos = rotateAxis(pos, vec3(1., 0., 0.), rotateAngle + twirlAngle);
-    
-    
-        float scale = pow(abs(cos(fulltime * M_PI)), 2.0) * .33;
-        pos *= 1. - scale;
-        pos.y -= scale * 0.35;
-        pos.x += cos(fulltime * M_PI) * -.02;
-    
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-}`;
+const TextCarousel = () => {
+  const [texts, setTexts] = useState(["Title 1", "Title 2", "Title 3"]);
 
-const fragmentShader = /*glsl*/ `
-    uniform float fulltime;
-    uniform vec3 color;
-    uniform float opacity;
-
-    #define M_PI 3.1415926538
-
-    void main() {
-        gl_FragColor.rgba = vec4(color, max(sin((fulltime)*M_PI), 0.2) * opacity);
-}`;
-
-const TextCarousel = ({ num }: { num: number }) => {
-  const { viewport, size } = useThree();
-  const text = useRef<any>();
-  const [textMat, setTextMat] = useState();
-  const [y, title, page, standalone, enabled]: any = [
-    0,
-    Titles[num],
-    0,
-    true,
-    true,
-  ];
-
-  const blobs = Titles;
-
-  const local = useRef({}).current;
+  const textRef = useRef<any>();
+  const groupRef = useRef<any>(null); // Create a group for the text
+  const [{ scrollPosition }, api] = useSpring(() => ({
+    scrollPosition: 0,
+  }));
 
   useFrame(({ clock }) => {
-    if (text.current) {
-      text.current.material.opacity = MathUtils.lerp(
-        text.current.material.opacity,
-        enabled ? 1 : 0,
-        enabled ? 0.05 : 0.2
-      );
-      text.current.material.heightFactor += clock.getElapsedTime();
-    }
+    // groupRef.current.material.uniforms.time.value = clock.elapsedTime;
+    // groupRef.current.rotation.y = scrollPosition;
+    textRef.current.position.x = Math.cos(clock.elapsedTime) * 5;
   });
 
-  const isPortrait = size.height > size.width;
-  // const isVR = useUIStore((s) => s.isVR)
+  useGesture({
+    onScroll: (event) => {
+      api.start({
+        scrollPosition: Number(scrollPosition) + event.delta[1] * 0.001,
+      });
+    },
+  });
 
   return (
-    <mesh ref={text} position={[0 + 5 * num, 0, 0]} rotation={[0, 0, 0]}>
+    <mesh ref={groupRef}>
+      <planeGeometry />
+      {/* <meshBasicMaterial /> */}
       <shaderMaterial
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
-        uniforms={uniforms}
+        vertexShader={VertexShader}
+        uniforms={uniform}
+        fragmentShader={FragmentShader}
       />
-      <Text ref={text} color={"white"} letterSpacing={-0.06} renderOrder={10}>
-        {title}
-      </Text>
+      <RenderTexture attach="map" anisotropy={2}>
+        <PerspectiveCamera
+          makeDefault
+          manual
+          aspect={1 / 1}
+          position={[0, 0, 5]}
+        />
+
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[10, 10, 5]} />
+        <Text
+          ref={textRef}
+          fontSize={2}
+          color="#FFFFFF"
+          anchorX="center"
+          anchorY="middle"
+        >
+          'hi'
+        </Text>
+      </RenderTexture>
     </mesh>
   );
 };

@@ -10,6 +10,7 @@ const useBlob = () => {
 
   const [{ background }, api] = useSpring(() => ({
     background: setting.bg,
+    config: { tension: 120, friction: 14 },
   }));
 
   const clickHandler = (e: any) => {

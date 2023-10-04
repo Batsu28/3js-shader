@@ -33,10 +33,9 @@ const SphereCanvas = () => {
         <ambientLight intensity={ambient} color={"white"} />
         <Lights lights={lights} />
         <Suspense fallback={null}>
-          <Blob material={material} map={map} geometry={geometry} />
-          {/* {Titles.map((_, i) => (
-            <TextCarousel key={i} num={i} />
-          ))} */}
+          {/* <Blob material={material} map={map} geometry={geometry} /> */}
+
+          <TextCarousel />
         </Suspense>
         <Stats />
         <OrbitControls />
