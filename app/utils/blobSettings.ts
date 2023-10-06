@@ -51,7 +51,7 @@ const BlobSetting: SettingType = {
   //     },
   //   ],
   //   bg: "#75BCC6",
-  //   map: "iridescent",
+  //   map: 6,
   //   ambient: 0,
   //   geometry: {
   //     scale: 1,
@@ -76,6 +76,7 @@ const BlobSetting: SettingType = {
       numberOfWaves: 1.0,
       surfaceSpeed: 1,
       surfacePoleAmount: 1,
+      fixNormals: true,
     },
     lights: [
       {
@@ -107,7 +108,7 @@ const BlobSetting: SettingType = {
       },
     ],
     bg: "#7600F0",
-    map: "rainbow",
+    map: 0,
     ambient: 1,
     geometry: {
       scale: 1.04,
@@ -165,7 +166,7 @@ const BlobSetting: SettingType = {
   //     },
   //   ],
   //   bg: "#FDCF8A",
-  //   map: "rainbow",
+  //   map: 0,
   //   ambient: 2,
   //   geometry: {
   //     scale: 0.57,
@@ -190,6 +191,7 @@ const BlobSetting: SettingType = {
       numberOfWaves: 7.2,
       surfaceSpeed: 1,
       surfacePoleAmount: 1,
+      fixNormals: true,
     },
     lights: [
       {
@@ -221,7 +223,7 @@ const BlobSetting: SettingType = {
       },
     ],
     bg: "#536C9B",
-    map: "deep-ocean",
+    map: 1,
     ambient: 0.2,
     geometry: {
       scale: 0.9,
@@ -277,7 +279,7 @@ const BlobSetting: SettingType = {
   //     },
   //   ],
   //   bg: "#8FD8A5",
-  //   map: "cd",
+  //   map: 7,
   //   ambient: 0,
   //   geometry: {
   //     scale: 1,
@@ -302,6 +304,7 @@ const BlobSetting: SettingType = {
       numberOfWaves: 12.07,
       surfaceSpeed: 1,
       surfacePoleAmount: 1,
+      fixNormals: true,
     },
     lights: [
       {
@@ -333,7 +336,7 @@ const BlobSetting: SettingType = {
       },
     ],
     bg: "#371B53",
-    map: "cosmic-fusion",
+    map: 2,
     ambient: 0,
     geometry: {
       scale: 1.04,
@@ -393,7 +396,7 @@ const BlobSetting: SettingType = {
   //     },
   //   ],
   //   bg: "#99AAE6",
-  //   map: "halloween",
+  //   map: 8,
   //   ambient: 0,
   //   geometry: {
   //     scale: 1,
@@ -425,9 +428,9 @@ const BlobSetting: SettingType = {
     lights: [
       {
         position: new Vector3(-1.6, 3.73, -1),
-        intensity: 17.65,
-        angle: 0.84,
-        distance: 4.2,
+        intensity: 13.65,
+        angle: 0.55,
+        distance: 4.5,
         penumbra: 1.0,
         decay: 0.0,
         color: "#ED00FF",
@@ -435,8 +438,8 @@ const BlobSetting: SettingType = {
 
       {
         position: new Vector3(0, 0.07, 2.67),
-        intensity: 13.0,
-        angle: 0.28,
+        intensity: 5,
+        angle: 0.27,
         distance: 3.73,
         penumbra: 0.5,
         decay: 0.5,
@@ -445,16 +448,16 @@ const BlobSetting: SettingType = {
 
       {
         position: new Vector3(4, -2.93, 2.13),
-        intensity: 10.75,
-        angle: 0.61,
-        distance: 5.13,
+        intensity: 0,
+        angle: 0.11,
+        distance: 1.13,
         penumbra: 1.0,
         decay: 0.5,
         color: "#04BEEE",
       },
     ],
     bg: "#380B16",
-    map: "passion",
+    map: 3,
     ambient: 0.35,
     geometry: {
       scale: 1,
@@ -514,7 +517,7 @@ const BlobSetting: SettingType = {
   //     },
   //   ],
   //   bg: "#F186B7",
-  //   map: "floyd",
+  //   map: 9,
   //   ambient: 2,
   //   geometry: {
   //     scale: 1,
@@ -541,6 +544,7 @@ const BlobSetting: SettingType = {
       numberOfWaves: 2.71,
       surfaceSpeed: 1,
       surfacePoleAmount: 1,
+      fixNormals: true,
     },
     lights: [
       {
@@ -574,7 +578,7 @@ const BlobSetting: SettingType = {
       },
     ],
     bg: "#657174",
-    map: "white",
+    map: 4,
     ambient: 0.19,
     geometry: {
       scale: 0.85,
@@ -634,7 +638,7 @@ const BlobSetting: SettingType = {
   //     },
   //   ],
   //   bg: "#523EA4",
-  //   map: "hollogram",
+  //   map: 10,
   //   ambient: 0,
   //   geometry: {
   //     scale: 0.96,
@@ -695,7 +699,7 @@ const BlobSetting: SettingType = {
       },
     ],
     bg: "#042A2A",
-    map: "cosmic-fusion",
+    map: 2,
     ambient: 0.25,
     geometry: {
       scale: 1,
@@ -755,7 +759,7 @@ const BlobSetting: SettingType = {
   //     },
   //   ],
   //   bg: "#FDB38A",
-  //   map: "imaginarium",
+  //   map: 11,
   //   ambient: 0,
   //   geometry: {
   //     scale: 1,
@@ -782,40 +786,41 @@ const BlobSetting: SettingType = {
       numberOfWaves: 0.07,
       surfaceSpeed: 6,
       surfacePoleAmount: 0,
+      fixNormals: true,
     },
     lights: [
       {
-        position: new Vector3(4.13, 5, 0),
-        intensity: 5,
-        angle: 0.88,
-        distance: 20,
-        penumbra: 1,
+        position: new Vector3(0.53, 2.6, 0.67),
+        intensity: 1.5,
+        angle: 0.77,
+        distance: 11.4,
+        penumbra: 0.11,
         decay: 0,
         color: "#FF8600",
       },
 
       {
-        position: new Vector3(-7.67, -7.67, -3.53),
-        intensity: 1.5,
-        angle: 1.57,
-        distance: 20,
+        position: new Vector3(-5.6, -4.27, 1.27),
+        intensity: 3.6,
+        angle: 0.27,
+        distance: 6.47,
         penumbra: 1,
-        decay: 0,
+        decay: 0.5,
         color: "#637CFF",
       },
 
       {
-        position: new Vector3(10, -6.73, -0.53),
-        intensity: 0.82,
-        angle: 1.57,
-        distance: 20,
+        position: new Vector3(3.2, -0.93, 0.47),
+        intensity: 1.4,
+        angle: 0.39,
+        distance: 4.13,
         penumbra: 1,
-        decay: 0,
+        decay: 0.45,
         color: "#0700FF",
       },
     ],
     bg: "#180075",
-    map: "sunset-vibes",
+    map: 5,
     ambient: 0.31,
     geometry: {
       scale: 1.04,

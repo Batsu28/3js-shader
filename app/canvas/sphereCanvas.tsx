@@ -1,45 +1,32 @@
 "use client";
 
-import { Environment, OrbitControls, Stats } from "@react-three/drei";
+import { Environment, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Suspense, useRef } from "react";
+import { Suspense } from "react";
 import Blob from "./blobMesh/blob";
 import useBlob from "../hooks/useBlob";
 import Lights from "./light";
 import { animated } from "@react-spring/web";
-import TextCarousel from "./titles/title";
-import { Titles } from "../utils/blobSettings";
 
 const SphereCanvas = () => {
-  const { clickHandler, bg, lights, material, map, geometry, ambient } =
+  const { clickHandler, background, bg, ambient, lights, ...restSetting } =
     useBlob();
-
-  const textRef = useRef<any>();
 
   return (
     <animated.div
-      className={"w-full h-full"}
-      style={{
-        background: bg,
-        transition: "ease-in",
-        transitionDuration: "0.5s",
-      }}
+      className="w-full h-full"
       onClick={clickHandler}
+      style={{ background, transition: "ease-out 0.5s" }}
     >
-      <Canvas
-        camera={{ position: [0, 0, 4], fov: 50, near: 0.1, zoom: 1 }}
-        dpr={1}
-      >
-        <ambientLight intensity={ambient} color={"white"} />
+      <Canvas camera={{ position: [0, 0, 4], fov: 50 }}>
+        <ambientLight intensity={ambient} />
         <Lights lights={lights} />
         <Suspense fallback={null}>
-          {/* <Blob material={material} map={map} geometry={geometry} /> */}
-
-          <TextCarousel />
+          <Blob {...restSetting} />
         </Suspense>
         <Stats />
-        <OrbitControls />
-        <Environment preset="studio"></Environment>
+        {/* <OrbitControls /> */}
+        <Environment files={"/peppermint_powerplant_1k.hdr"} />
       </Canvas>
     </animated.div>
   );

@@ -23,7 +23,7 @@ interface SettingType {
     };
     lights: LightType[];
     bg: string;
-    map: string;
+    map: string | number;
     ambient: number;
     geometry: {
       scale: number;

@@ -1,8 +1,4 @@
-import {
-  MeshPhysicalMaterial,
-  ShaderChunk,
-  ShaderMaterialParameters,
-} from "three";
+import { MeshPhysicalMaterial, ShaderChunk } from "three";
 import { displacement, headers } from "./shader";
 
 const LOOP_DURATION = 12;
