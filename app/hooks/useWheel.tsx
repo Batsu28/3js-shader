@@ -8,11 +8,11 @@ function useWheel() {
     const deltaY = e.deltaY;
     const deltaX = e.deltaX;
 
-    if (deltaY < 0 && deltaX < 0) {
-      // Scrolling up and to the left
+    if (deltaY < 0 || deltaX < 0) {
+      // Scrolling up or to the left
       setNextPage(true);
-    } else if (deltaY > 0 && deltaX > 0) {
-      // Scrolling down and to the right
+    } else if (deltaY > 0 || deltaX > 0) {
+      // Scrolling down or to the right
       setPrevPage(true);
     }
   };
