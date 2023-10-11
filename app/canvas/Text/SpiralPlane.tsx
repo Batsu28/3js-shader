@@ -8,9 +8,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { DoubleSide, MathUtils, PlaneGeometry } from "three";
 
 import useWheel from "@/app/hooks/useWheel";
+import useBlob from "@/app/hooks/useBlob";
+
 gsap.registerPlugin();
 
-export default function SpiralPlane() {
+export default function SpiralPlane({ setChange }: any) {
   const box: any = useRef();
   const { prevPage, setPrevPage, nextPage, setNextPage, handleWheel } =
     useWheel();
@@ -33,10 +35,12 @@ export default function SpiralPlane() {
             key={index}
             position={data.position}
             texture={imageData[index % 14].imagePath}
+            name={data.name}
             id={index}
             nextPage={nextPage}
             prevPage={prevPage}
             pageToFalse={() => (setNextPage(false), setPrevPage(false))}
+            setChange={setChange}
           ></M>
         ))}
       </group>
@@ -44,13 +48,26 @@ export default function SpiralPlane() {
   );
 }
 
-const M = ({ id, position, texture, nextPage, prevPage, pageToFalse }: any) => {
-  console.log(nextPage);
+const M = ({
+  id,
+  name,
+  position,
+  texture,
+  nextPage,
+  prevPage,
+  pageToFalse,
+  setChange,
+}: any) => {
+  // console.log(nextPage);
   const { viewport } = useThree();
   const [colorMap] = useTexture([texture]);
+  // const { setChange } = useBlob();
+
   const geometry: any = new PlaneGeometry(2, 0.5, 20, 20);
+
   const shape: any = useRef();
   const shader: any = useRef();
+
   geometry.computeBoundingBox();
   useFrame((state, delta) => {
     if (nextPage || prevPage) {
@@ -67,6 +84,7 @@ const M = ({ id, position, texture, nextPage, prevPage, pageToFalse }: any) => {
           shader.current.time = 0.0;
         },
       });
+      setChange(false);
     } else if (prevPage) {
       gsap.to(shape.current.position, {
         x: shape.current.position.x - 4,
@@ -76,9 +94,9 @@ const M = ({ id, position, texture, nextPage, prevPage, pageToFalse }: any) => {
           shader.current.time = 0.0;
         },
       });
+      setChange(false);
     }
   }, [nextPage, prevPage]);
-
   return (
     <motion.mesh
       whileHover={{ scale: 1.1 }}

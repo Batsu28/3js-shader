@@ -7,7 +7,6 @@ function useWheel() {
   const handleWheel = (e: any) => {
     const deltaY = e.deltaY;
     const deltaX = e.deltaX;
-
     if (deltaY < 0 || deltaX < 0) {
       // Scrolling up or to the left
       setNextPage(true);

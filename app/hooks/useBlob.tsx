@@ -1,33 +1,50 @@
 import { useEffect, useMemo, useState } from "react";
 import { BlobSetting, Titles } from "../utils/blobSettings";
 import { useSpring } from "@react-spring/web";
+import useWheel from "./useWheel";
 
 const useBlob = () => {
-  const [number, setNumber] = useState(0);
+  const { prevPage, nextPage, setNextPage, setPrevPage } = useWheel();
+  const [current, setCurrent] = useState(4);
+  const [change, setChange] = useState(true);
+
   const length = Titles.length;
-  // const setting = useMemo(() => BlobSetting[Titles[number]], [number]);
-  const [setting, setSetting] = useState(BlobSetting[Titles[number]]);
+  const setting = useMemo(
+    () => BlobSetting[Titles[current]],
+    [nextPage, prevPage, current]
+  );
+  const pageToFalse = () =>
+    !change && (setNextPage(false), setPrevPage(false), setChange(true));
 
-  const { background } = useSpring({
-    background: setting.bg,
-  });
-
-  useEffect(() => {
-    setSetting(BlobSetting[Titles[number]]);
-  }, [number]);
-
-  const clickHandler = () => {
-    if (number < length - 1) {
-      setNumber(number + 1);
-    } else {
-      console.log("number 0", number);
-
-      setNumber(0);
+  const clickHandler = (num: number) => {
+    if (current == 0) {
+      setCurrent(length - 1);
+      return;
     }
-    console.log("number update:", number);
+    if (current == length - 1) {
+      setCurrent(0);
+      return;
+    }
+    setCurrent(current + num);
   };
 
-  return { clickHandler, background, ...setting };
+  // console.log(nextPage);
+
+  useEffect(() => {
+    if (nextPage) {
+      clickHandler(-1);
+      return;
+    }
+    if (prevPage) {
+      clickHandler(1);
+      return;
+    }
+    console.log("test");
+  }, [nextPage, prevPage]);
+
+  pageToFalse();
+
+  return { setChange, ...setting };
 };
 
 export default useBlob;
