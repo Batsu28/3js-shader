@@ -18,6 +18,8 @@
 
 body {
   color: rgb(var(--foreground-rgb));
+  overflow-y: hidden;
+  overflow-x: hidden;
   background: linear-gradient(
       to bottom,
       transparent,

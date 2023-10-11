@@ -1,12 +1,13 @@
 "use client";
 
-import { Environment, Stats } from "@react-three/drei";
+import { Environment, OrbitControls, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import Blob from "./blobMesh/blob";
 import useBlob from "../hooks/useBlob";
 import Lights from "./light";
 import { animated } from "@react-spring/web";
+import SpiralPlane from "./Text/SpiralPlane";
 
 const SphereCanvas = () => {
   const { clickHandler, background, bg, ambient, lights, ...restSetting } =
@@ -23,6 +24,7 @@ const SphereCanvas = () => {
         <Lights lights={lights} />
         <Suspense fallback={null}>
           <Blob {...restSetting} />
+          <SpiralPlane />
         </Suspense>
         <Stats />
         {/* <OrbitControls /> */}
