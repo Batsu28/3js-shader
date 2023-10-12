@@ -3,44 +3,32 @@ import { extend, useFrame, useThree } from "@react-three/fiber";
 
 import { motion } from "framer-motion-3d";
 import gsap from "gsap";
-import imageData, { ImageData } from "./data";
+import { pages } from "./data";
 import React, { useEffect, useRef, useState } from "react";
 import { DoubleSide, MathUtils, PlaneGeometry } from "three";
 
 import useWheel from "@/app/hooks/useWheel";
 import useBlob from "@/app/hooks/useBlob";
+import useUsefulHooks from "@/app/hooks/useWheel";
+import { update } from "@react-spring/core";
 
 gsap.registerPlugin();
 
 export default function SpiralPlane({ setChange }: any) {
-  const box: any = useRef();
-  const { prevPage, setPrevPage, nextPage, setNextPage, handleWheel } =
-    useWheel();
-
+  const { prevPage, updateToFalse, nextPage }: any = useUsefulHooks();
   return (
     <>
-      <group position={[0, 0.1, 1.5]} onWheel={handleWheel}>
-        {/* <Box
-          ref={box}
-          position={[0, 1.5, 0]}
-          onClick={() => setNextPage(true)}
-        ></Box>
-        <Box
-          ref={box}
-          position={[-2, 1.5, 0]}
-          onClick={() => setPrevPage(true)}
-        ></Box> */}
-        {imageData.map((data, index) => (
+      <group position={[0, 0.1, 1.5]}>
+        {pages.map((data: any, index: number) => (
           <M
             key={index}
             position={data.position}
-            texture={imageData[index % 14].imagePath}
+            texture={data.imagePath}
             name={data.name}
             id={index}
             nextPage={nextPage}
             prevPage={prevPage}
-            pageToFalse={() => (setNextPage(false), setPrevPage(false))}
-            setChange={setChange}
+            pageToFalse={() => updateToFalse()}
           ></M>
         ))}
       </group>
@@ -71,35 +59,42 @@ const M = ({
   geometry.computeBoundingBox();
   useFrame((state, delta) => {
     if (nextPage || prevPage) {
-      shader.current.time = MathUtils.lerp(shader.current.time, 0.5, 0.027);
+      shader.current.time = MathUtils.lerp(shader.current.time, 0.5, 0.04);
     }
   });
   useEffect(() => {
+    shader.current.time = 0.0;
     if (nextPage) {
       gsap.to(shape.current.position, {
-        x: shape.current.position.x + 4,
-        duration: 2.5,
+        x: shape.current.position.x - 4,
+        duration: 2,
         onComplete: () => {
           pageToFalse();
           shader.current.time = 0.0;
+
+          if (shape.current.position.x === -12) {
+            shape.current.position.x = 44;
+          }
+          // console.log(shape.current.position.x);
         },
       });
-      setChange(false);
     } else if (prevPage) {
       gsap.to(shape.current.position, {
-        x: shape.current.position.x - 4,
-        duration: 2.5,
+        x: shape.current.position.x + 4,
+        duration: 2,
         onComplete: () => {
           pageToFalse();
           shader.current.time = 0.0;
+          if (shape.current.position.x === 48) {
+            shape.current.position.x = -8;
+          }
         },
       });
-      setChange(false);
     }
   }, [nextPage, prevPage]);
   return (
     <motion.mesh
-      whileHover={{ scale: 1.1 }}
+      // whileHover={{ scale: 1.1 }}
       key={id}
       geometry={geometry}
       ref={shape}

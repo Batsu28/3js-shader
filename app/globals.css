@@ -27,3 +27,23 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+.headerBtn {
+  display: flex;
+  flex-direction: column;
+}
+.headerBtn::after {
+  position: relative;
+  left: 100%;
+  content: "";
+  border-bottom: white solid 1px;
+  width: 0;
+  transition: all 0.3s ease-in;
+}
+.headerBtn:hover::after {
+  position: relative;
+  left: 0;
+  content: "";
+
+  width: 100%;
+  transition: width 0.3s ease-in;
+}

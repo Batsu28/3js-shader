@@ -10,50 +10,38 @@ import { animated } from "@react-spring/web";
 import SpiralPlane from "./Text/SpiralPlane";
 import { BlobSetting, Titles } from "../utils/blobSettings";
 import useWheel from "../hooks/useWheel";
+import { pages } from "./Text/data";
+import useUsefulHooks from "../hooks/useWheel";
 
-const SphereCanvas = () => {
+const SphereCanvas = ({ current, setCurrent }: any) => {
   // const { bg, ambient, lights, ...restSetting } = useBlob();
-  const { prevPage, nextPage, setNextPage, setPrevPage } = useWheel();
-  const [current, setCurrent] = useState(4);
-  const [change, setChange] = useState(true);
+  const { prevPage, nextPage }: any = useUsefulHooks();
+  // const [current, setCurrent] = useState(3);
 
-  const length = Titles.length;
   const { bg, ambient, lights, ...restSetting } = useMemo(
-    () => BlobSetting[Titles[current]],
+    () => BlobSetting[pages[current].name],
     [nextPage, prevPage, current]
   );
-  useEffect(() => {
-    if (!change) {
-      setNextPage(false);
-      setPrevPage(false);
-      setChange(true);
-    }
-  }, [change]);
-
-  const clickHandler = (num: number) => {
-    if (current == 0) {
-      setCurrent(length - 1);
-      return;
-    }
-    if (current == length - 1) {
-      setCurrent(0);
-      return;
-    }
-    setCurrent(current + num);
-  };
 
   useEffect(() => {
-    if (change) {
-      if (nextPage) {
-        clickHandler(-1);
-        return;
+    if (nextPage) {
+      if (current === pages.length - 1) {
+        setCurrent(0);
+      } else {
+        setCurrent(current + 1);
       }
-      if (prevPage) {
-        clickHandler(1);
-        return;
-      }
+      console.log("next");
     }
-  }, [nextPage, prevPage]);
+    if (prevPage) {
+      if (current === 0) {
+        setCurrent(pages.length - 1);
+      } else {
+        setCurrent(current - 1);
+      }
+      console.log("prev");
+    }
+  }, [prevPage, nextPage]);
+  console.log(prevPage, nextPage);
 
   return (
     <animated.div
@@ -65,7 +53,7 @@ const SphereCanvas = () => {
         <Lights lights={lights} />
         <Suspense fallback={null}>
           <Blob {...restSetting} />
-          <SpiralPlane setChange={setChange} />
+          <SpiralPlane />
         </Suspense>
         <Stats />
         {/* <OrbitControls /> */}
