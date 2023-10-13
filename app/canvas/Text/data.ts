@@ -8,6 +8,36 @@
 
 export const pages: any = [
   {
+    name: "firefly",
+    title: "Image 2",
+    imagePath: "/08-firefly.png",
+    position: -28,
+  },
+  {
+    name: "slinky",
+    title: "Image 3",
+    imagePath: "/09-slinky.png",
+    position: -24,
+  },
+  {
+    name: "t1000",
+    title: "Image 3",
+    imagePath: "/10-t1000.png",
+    position: -20,
+  },
+  {
+    name: "genesys",
+    title: "Image 3",
+    imagePath: "/11-genesys.png",
+    position: -16,
+  },
+  {
+    name: "protocool",
+    title: "Image 3",
+    imagePath: "/12-protocool.png",
+    position: -12,
+  },
+  {
     name: "liquidity",
     title: "Image 3",
     imagePath: "/13-liquidity.png",
@@ -61,35 +91,5 @@ export const pages: any = [
     title: "Image 1",
     imagePath: "/07-metagum.png",
     position: 24,
-  },
-  {
-    name: "firefly",
-    title: "Image 2",
-    imagePath: "/08-firefly.png",
-    position: 28,
-  },
-  {
-    name: "slinky",
-    title: "Image 3",
-    imagePath: "/09-slinky.png",
-    position: 32,
-  },
-  {
-    name: "t1000",
-    title: "Image 3",
-    imagePath: "/10-t1000.png",
-    position: 36,
-  },
-  {
-    name: "genesys",
-    title: "Image 3",
-    imagePath: "/11-genesys.png",
-    position: 40,
-  },
-  {
-    name: "protocool",
-    title: "Image 3",
-    imagePath: "/12-protocool.png",
-    position: 44,
   },
 ];

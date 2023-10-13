@@ -21,7 +21,7 @@ const RingSvg = () => {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <g clip-path="url(#a)">
+        <g clipPath="url(#a)">
           <mask
             id="b"
             width="50"
@@ -32,9 +32,9 @@ const RingSvg = () => {
           >
             <path
               fill="#ffffff"
-              fill-rule="evenodd"
+              fillRule="evenodd"
               d="M85.819 57h-7.638C77.17 68.228 68.228 77.17 57 78.182v7.636C68.228 86.83 77.17 95.772 78.181 107h7.638C86.83 95.772 95.772 86.83 107 85.818v-7.636C95.772 77.17 86.83 68.228 85.819 57Z"
-              clip-rule="evenodd"
+              clipRule="evenodd"
             ></path>
           </mask>
           <g mask="url(#b)">

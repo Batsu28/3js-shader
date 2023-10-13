@@ -1,17 +1,18 @@
-import { shaderMaterial } from "@react-three/drei";
-import { extend } from "@react-three/fiber";
+// import { shaderMaterial } from "@react-three/drei";
+// import { extend } from "@react-three/fiber";
 
-const Shader = shaderMaterial({}, ``, ``);
+// const Shader = shaderMaterial({}, ``, ``);
 
-extend({ Shader });
+// extend({ Shader });
 
-const TestShaderMat = () => {
-  return (
-    <mesh>
-      <sphereGeometry />
-      <shader />
-    </mesh>
-  );
-};
+// const TestShaderMat = () => {
+//   return (
+//     <mesh>
+//       <sphereGeometry />
+//       <shader />
+//     </mesh>
+//   );
+// };
 
-export default TestShaderMat;
+// export default TestShaderMat;
+// //

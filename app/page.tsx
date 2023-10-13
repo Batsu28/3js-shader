@@ -1,11 +1,35 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SphereCanvas from "./canvas/sphereCanvas";
-import Test from "./test";
-import Vr from "./vr";
+import Test from "../components/test";
+import Vr from "../components/vr";
+import useUsefulHooks from "./hooks/useWheel";
+import { pages } from "./canvas/Text/data";
 
 const Home = () => {
-  const [current, setCurrent] = useState(2);
+  const [current, setCurrent] = useState(7);
+  const { prevPage, nextPage, lastAction }: any = useUsefulHooks();
+
+  useEffect(() => {
+    if (lastAction) {
+      if (lastAction === "next") {
+        if (current === pages.length - 1) {
+          setCurrent(0);
+        } else {
+          setCurrent(current + 1);
+        }
+        console.log("next");
+      }
+      if (lastAction === "prev") {
+        if (current === 0) {
+          setCurrent(pages.length - 1);
+        } else {
+          setCurrent(current - 1);
+        }
+        console.log("prev");
+      }
+    }
+  }, [prevPage, nextPage]);
   return (
     <main className="w-full h-screen relative ">
       <SphereCanvas current={current} setCurrent={setCurrent} />

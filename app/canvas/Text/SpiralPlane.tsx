@@ -3,7 +3,10 @@ import { extend, useFrame, useThree } from "@react-three/fiber";
 
 import { motion } from "framer-motion-3d";
 import gsap from "gsap";
-import { pages } from "./data";
+import ScrollTrigger from "gsap/ScrollTrigger"; // Import the ScrollTrigger plugin
+gsap.registerPlugin(ScrollTrigger); // Register the ScrollTrigger plugin
+// console.log(ScrollTrigger);
+
 import React, { useEffect, useRef, useState } from "react";
 import { DoubleSide, MathUtils, PlaneGeometry } from "three";
 
@@ -11,24 +14,135 @@ import useWheel from "@/app/hooks/useWheel";
 import useBlob from "@/app/hooks/useBlob";
 import useUsefulHooks from "@/app/hooks/useWheel";
 import { update } from "@react-spring/core";
+import { pages as pagex } from "./data";
+import page from "@/app/page";
 
 gsap.registerPlugin();
-
 export default function SpiralPlane({ setChange }: any) {
-  const { prevPage, updateToFalse, nextPage }: any = useUsefulHooks();
+  const { prevPage, updateToFalse, nextPage, lastAction }: any =
+    useUsefulHooks();
+  const [pages, setPages] = useState<any>([
+    {
+      name: "firefly",
+      title: "Image 2",
+      imagePath: "/08-firefly.png",
+      position: -28,
+    },
+    {
+      name: "slinky",
+      title: "Image 3",
+      imagePath: "/09-slinky.png",
+      position: -24,
+    },
+    {
+      name: "t1000",
+      title: "Image 3",
+      imagePath: "/10-t1000.png",
+      position: -20,
+    },
+    {
+      name: "genesys",
+      title: "Image 3",
+      imagePath: "/11-genesys.png",
+      position: -16,
+    },
+    {
+      name: "protocool",
+      title: "Image 3",
+      imagePath: "/12-protocool.png",
+      position: -12,
+    },
+    {
+      name: "liquidity",
+      title: "Image 3",
+      imagePath: "/13-liquidity.png",
+      position: -8,
+    },
+    {
+      name: "lips",
+      title: "Image 3",
+      imagePath: "/14-lipsync.png",
+      position: -4,
+    },
+    {
+      name: "fomosphere",
+      title: "Image 1",
+      imagePath: "/01-fomosphere.png",
+      position: 0,
+    },
+    {
+      name: "disco",
+      title: "Image 2",
+      imagePath: "/02-discobrain.png",
+      position: 4,
+    },
+
+    {
+      name: "cyberfly",
+      title: "Image 3",
+      imagePath: "/03-cyberfly.png",
+      position: 8,
+    },
+    {
+      name: "twistertoy",
+      title: "Image 1",
+      imagePath: "/04-twistertoy.png",
+      position: 12,
+    },
+    {
+      name: "fungible",
+      title: "Image 2",
+      imagePath: "/05-fungible.png",
+      position: 16,
+    },
+    {
+      name: "metalness",
+      title: "Image 3",
+      imagePath: "/06-metalness.png",
+      position: 20,
+    },
+    {
+      name: "metagum",
+      title: "Image 1",
+      imagePath: "/07-metagum.png",
+      position: 24,
+    },
+  ]);
+  useEffect(() => {
+    if (lastAction) {
+      const updatedPages = pages.map((page: any) => ({
+        ...page,
+        position: page.position === -28 ? 24 : page.position - 4,
+      }));
+      setPages(updatedPages);
+    }
+  }, [nextPage]);
+
+  useEffect(() => {
+    if (lastAction) {
+      const updatedPages = pages.map((page: any) => ({
+        ...page,
+        position: page.position === 24 ? -28 : page.position + 4,
+      }));
+      setPages(updatedPages);
+    }
+  }, [prevPage]);
+
+  // console.log(pages);
   return (
     <>
       <group position={[0, 0.1, 1.5]}>
         {pages.map((data: any, index: number) => (
           <M
             key={index}
-            position={data.position}
+            position={pagex[index].position}
             texture={data.imagePath}
             name={data.name}
             id={index}
             nextPage={nextPage}
             prevPage={prevPage}
             pageToFalse={() => updateToFalse()}
+            page={pages[index]}
           ></M>
         ))}
       </group>
@@ -41,57 +155,87 @@ const M = ({
   name,
   position,
   texture,
-  nextPage,
-  prevPage,
   pageToFalse,
   setChange,
+  page,
 }: any) => {
   // console.log(nextPage);
   const { viewport } = useThree();
   const [colorMap] = useTexture([texture]);
   // const { setChange } = useBlob();
+  const {
+    prevPage,
+    updateToFalse,
+    nextPage,
+    lastAction,
+    deltaX,
+    wheelOrArrow,
+  }: any = useUsefulHooks();
 
   const geometry: any = new PlaneGeometry(2, 0.5, 20, 20);
 
-  const shape: any = useRef();
+  let shape: any = useRef();
   const shader: any = useRef();
 
   geometry.computeBoundingBox();
   useFrame((state, delta) => {
-    if (nextPage || prevPage) {
+    if (wheelOrArrow === "arrow") {
       shader.current.time = MathUtils.lerp(shader.current.time, 0.5, 0.04);
     }
   });
   useEffect(() => {
-    shader.current.time = 0.0;
-    if (nextPage) {
-      gsap.to(shape.current.position, {
-        x: shape.current.position.x - 4,
-        duration: 2,
-        onComplete: () => {
-          pageToFalse();
-          shader.current.time = 0.0;
-
-          if (shape.current.position.x === -12) {
-            shape.current.position.x = 44;
-          }
-          // console.log(shape.current.position.x);
-        },
-      });
-    } else if (prevPage) {
-      gsap.to(shape.current.position, {
-        x: shape.current.position.x + 4,
-        duration: 2,
-        onComplete: () => {
-          pageToFalse();
-          shader.current.time = 0.0;
-          if (shape.current.position.x === 48) {
-            shape.current.position.x = -8;
-          }
-        },
-      });
+    if (wheelOrArrow === "arrow") {
+      shader.current.time = 0;
     }
-  }, [nextPage, prevPage]);
+    console.log(wheelOrArrow);
+    if (lastAction) {
+      if (page.position >= -8 && page.position <= 8) {
+        if (lastAction === "next") {
+          gsap.to(shape.current.position, {
+            x: page.position,
+            duration: 2,
+          });
+        } else if (lastAction === "prev") {
+          gsap.to(shape.current.position, {
+            x: page.position,
+            duration: 2,
+          });
+        }
+      } else {
+        if (lastAction === "next") {
+          shape.current.position.x =
+            page.position === -28 ? 24 : page.position - 4;
+        } else if (lastAction === "prev") {
+          shape.current.position.x =
+            page.position === 24 ? -28 : page.position + 4;
+        }
+      }
+    }
+    // snapX: (lerp) =>
+    // set((state) => {
+    //   const targetX = MathUtils.lerp(
+    //     state.targetX,
+    //     state.currentPageX + state.textParallax,
+    //     lerp
+    //   )
+    //   state.updateTargetX(targetX)
+    // }),
+  }, [page]);
+  useEffect(() => {
+    console.log(deltaX);
+    if (page.position >= -8 && page.position <= 8) {
+      if (deltaX < 0) {
+        shape.current.position.x += 0.01;
+        shader.current.time += 0.004;
+      } else if (deltaX > 0) {
+        shape.current.position.x -= 0.01;
+        shader.current.time += 0.004;
+      } else {
+        shape.current.position.x = page.position;
+        shader.current.time = 0;
+      }
+    }
+  }, [deltaX]);
   return (
     <motion.mesh
       // whileHover={{ scale: 1.1 }}
@@ -152,7 +296,7 @@ const Shading = shaderMaterial(
             float twirlPeriod = sin(progress * M_PI*2.);
     
             float rotateAngle = -direction * pow(sin(progress * M_PI), 1.5) * twistAmount;
-            float twirlAngle = -sin(uv.x -.5) * pow(twirlPeriod, 2.0) * -4.;
+            float twirlAngle = -sin(uv.x -.5) * pow(twirlPeriod, 2.0) * -6.;
             pos = rotateAxis(pos, vec3(1., 0., 0.), rotateAngle + twirlAngle);
     
     

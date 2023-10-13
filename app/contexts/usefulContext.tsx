@@ -1,40 +1,56 @@
+import next from "next";
 import { useState, useEffect, createContext } from "react";
 
 const UsefulContext = createContext({} as any);
 
 export const UsefulProvider = (props: any) => {
-  const [prevPage, setPrevPage] = useState(false);
-  const [nextPage, setNextPage] = useState(false);
+  let [prevPage, setPrevPage] = useState(0);
+  let [nextPage, setNextPage] = useState(0);
+  const [lastAction, setLastAction]: any = useState(null);
   const [hasDetectedDirection, setHasDetectedDirection] = useState(false);
+  const [deltaX, setDeltaX] = useState(0);
+  const [wheelOrArrow, setWheelOrArrow] = useState("wheel");
+  let isWheelEventTriggered = false;
 
   const handleWheel = (e: any) => {
-    if (hasDetectedDirection) {
-      return; // Don't make any changes if the direction has already been detected.
-    }
-
+    setWheelOrArrow("wheel");
     const deltaY = e.deltaY;
     const deltaX = e.deltaX;
+    setDeltaX(deltaX);
+    // console.log(deltaX);
+    console.log(deltaX);
+    if (!isWheelEventTriggered) {
+      if (deltaX < 0) {
+        if (deltaX < -2) {
+          setPrevPage(++prevPage);
+          setLastAction("prev");
+        }
+      } else if (deltaX > 0) {
+        if (deltaX > 2) {
+          setNextPage(++nextPage);
+          setLastAction("next");
+        }
+      }
+      isWheelEventTriggered = true;
 
-    if (deltaY < 0 || deltaX < 0) {
-      setPrevPage(true);
-      setHasDetectedDirection(true); // Mark that you've detected the direction.
-    } else if (deltaY > 0 || deltaX > 0) {
-      setNextPage(true);
-      setHasDetectedDirection(true); // Mark that you've detected the direction.
+      // Set a timeout to reset the flag after a delay if needed
+      setTimeout(() => {
+        isWheelEventTriggered = false;
+      }, 1000); // Adjust the delay as needed
     }
   };
-
   const handleKeyDown = (e: any) => {
+    setWheelOrArrow("arrow");
     if (e.key === "ArrowLeft") {
-      setNextPage(true);
+      setPrevPage(++prevPage);
+      setLastAction("prev");
     } else if (e.key === "ArrowRight") {
-      setPrevPage(true);
+      setNextPage(++nextPage);
+      setLastAction("next");
     }
   };
 
   const updateToFalse = () => {
-    setPrevPage(false);
-    setNextPage(false);
     setHasDetectedDirection(false); // Reset the direction detection.
   };
 
@@ -53,6 +69,9 @@ export const UsefulProvider = (props: any) => {
         prevPage,
         updateToFalse,
         nextPage,
+        lastAction,
+        deltaX,
+        wheelOrArrow,
       }}
     >
       {props.children}

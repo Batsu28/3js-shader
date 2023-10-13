@@ -47,3 +47,10 @@ body {
   width: 100%;
   transition: width 0.3s ease-in;
 }
+.container {
+  overscroll-behavior: none;
+  width: 600%;
+  height: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+}
