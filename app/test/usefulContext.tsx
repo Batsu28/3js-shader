@@ -8,7 +8,7 @@ export const UsefulProvider = (props: any) => {
   let [nextPage, setNextPage] = useState(false);
   const [lastAction, setLastAction]: any = useState(null);
   const [hasDetectedDirection, setHasDetectedDirection] = useState(false);
-  const [deltaX, setDeltaX] = useState(1);
+  const [deltaX, setDeltaX] = useState(6);
   const [wheelOrArrow, setWheelOrArrow] = useState("wheel");
   const [active, setActive] = useState(false);
   let isWheelEventTriggered: any = null;
@@ -17,49 +17,48 @@ export const UsefulProvider = (props: any) => {
     setWheelOrArrow("wheel");
     setActive(true);
     const deltaY = e.deltaY;
-    const deltaX = e.deltaX;
-    // console.log(e);
+    const eventDelta = e.wheelDelta;
+    if (Math.abs(eventDelta) > deltaX) {
+      setDeltaX(Math.abs(eventDelta));
+    }
+
+    // console.log(e.wheelDelta);
     // console.log(deltaX);
-    if (deltaX < 0) {
-      if (deltaX > -60) {
-        setPrevPage(true);
-        setLastAction("prev");
-        setDeltaX(1);
-      } else {
-        setPrevPage(true);
-        setLastAction("prev");
-        setDeltaX(1);
-      }
-    } else if (deltaX > 0) {
+    if (eventDelta > 0) {
+      setPrevPage(true);
+      setLastAction("prev");
+    } else if (eventDelta < 0) {
       setNextPage(true);
       setLastAction("next");
-      if (deltaX < 60) {
-        setDeltaX(1);
-      } else {
-        setDeltaX(Math.ceil(deltaX / 60));
-      }
     }
-    clearTimeout(isWheelEventTriggered);
-    isWheelEventTriggered = setTimeout(() => {
-      setActive(false);
-      setPrevPage(false);
-      setNextPage(false);
-    }, 100);
+
+    updateToFalse(200);
   };
 
   const handleKeyDown = (e: any) => {
     setWheelOrArrow("arrow");
     if (e.key === "ArrowLeft") {
+      setActive(true);
+
       setPrevPage(true);
       setLastAction("prev");
     } else if (e.key === "ArrowRight") {
+      setActive(true);
+
       setNextPage(true);
       setLastAction("next");
     }
+    updateToFalse(1);
   };
 
-  const updateToFalse = () => {
-    setHasDetectedDirection(false); // Reset the direction detection.
+  const updateToFalse = (time: number) => {
+    clearTimeout(isWheelEventTriggered);
+    isWheelEventTriggered = setTimeout(() => {
+      setActive(false);
+      setPrevPage(false);
+      setNextPage(false);
+      setDeltaX(6);
+    }, time);
   };
 
   useEffect(() => {

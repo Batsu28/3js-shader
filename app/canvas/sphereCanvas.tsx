@@ -10,16 +10,14 @@ import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import Blob from "./blobMesh/blob";
-import useBlob from "../hooks/useBlob";
 import Lights from "./light";
 import { animated } from "@react-spring/web";
-import SpiralPlane from "./Text/SpiralPlane";
+// import SpiralPlane from "./Text/SpiralPlane";
+import SpiralPlane from "../test/textCarousel";
 import { BlobSetting, Titles } from "../utils/blobSettings";
 import useWheel from "../hooks/useWheel";
 import { pages } from "./Text/data";
 import useUsefulHooks from "../hooks/useWheel";
-import { Interactive } from "@react-three/xr";
-import { easing } from "maath";
 const SphereCanvas = ({ current, setCurrent }: any) => {
   // const { bg, ambient, lights, ...restSetting } = useBlob();
   const { prevPage, nextPage, lastAction }: any = useUsefulHooks();
@@ -40,7 +38,7 @@ const SphereCanvas = ({ current, setCurrent }: any) => {
 
         <Lights lights={lights} />
         <Suspense fallback={null}>
-          <Blob {...restSetting} />
+          {/* <Blob {...restSetting} /> */}
           <SpiralPlane />
         </Suspense>
         <Stats />

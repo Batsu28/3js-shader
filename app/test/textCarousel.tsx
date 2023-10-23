@@ -3,7 +3,6 @@ import { extend, useFrame, useThree } from "@react-three/fiber";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { DoubleSide, MathUtils, PlaneGeometry, Vector3 } from "three";
-import { a, useSpring } from "@react-spring/three";
 import useUsefulHooks from "@/app/hooks/useWheel";
 
 import gsap from "gsap";
@@ -17,43 +16,43 @@ const pages = [
     name: "firefly",
     title: "Image 2",
     imagePath: "/08-firefly.png",
-    position: -28,
+    position: -21,
   },
   {
     name: "slinky",
     title: "Image 3",
     imagePath: "/09-slinky.png",
-    position: -24,
+    position: -18,
   },
   {
     name: "t1000",
     title: "Image 3",
     imagePath: "/10-t1000.png",
-    position: -20,
+    position: -15,
   },
   {
     name: "genesys",
     title: "Image 3",
     imagePath: "/11-genesys.png",
-    position: -16,
+    position: -12,
   },
   {
     name: "protocool",
     title: "Image 3",
     imagePath: "/12-protocool.png",
-    position: -12,
+    position: -9,
   },
   {
     name: "liquidity",
     title: "Image 3",
     imagePath: "/13-liquidity.png",
-    position: -8,
+    position: -6,
   },
   {
     name: "lips",
     title: "Image 3",
     imagePath: "/14-lipsync.png",
-    position: -4,
+    position: -3,
   },
   {
     name: "fomosphere",
@@ -65,38 +64,38 @@ const pages = [
     name: "disco",
     title: "Image 2",
     imagePath: "/02-discobrain.png",
-    position: 4,
+    position: 3,
   },
 
   {
     name: "cyberfly",
     title: "Image 3",
     imagePath: "/03-cyberfly.png",
-    position: 8,
+    position: 6,
   },
   {
     name: "twistertoy",
     title: "Image 1",
     imagePath: "/04-twistertoy.png",
-    position: 12,
+    position: 9,
   },
   {
     name: "fungible",
     title: "Image 2",
     imagePath: "/05-fungible.png",
-    position: 16,
+    position: 12,
   },
   {
     name: "metalness",
     title: "Image 3",
     imagePath: "/06-metalness.png",
-    position: 20,
+    position: 15,
   },
   {
     name: "metagum",
     title: "Image 1",
     imagePath: "/07-metagum.png",
-    position: 24,
+    position: 18,
   },
 ];
 
@@ -120,92 +119,206 @@ export default function SpiralPlane({ setChange }: any) {
   ];
   const colorMap: any = useTexture(textTexture);
 
-  let num = 0;
   const [current, setCurrent] = useState(0);
+  const [curve, setCurve] = useState(0);
+  const [isChanged, setIsChanged] = useState(false);
+  const [back, setBack] = useState(false);
 
-  const { prevPage, updateToFalse, nextPage, lastAction, deltaX, active } =
-    useUsefulHooks();
-  useEffect(() => {
-    // console.log(active);
+  const {
+    prevPage,
+    updateToFalse,
+    nextPage,
+    lastAction,
+    wheelOrArrow,
+    deltaX,
+    active,
+  } = useUsefulHooks();
+  let offset: number = 1;
+  let num = 0;
 
-    if (active) {
-      num = groupRef.current.position.x - 0.7;
-      // console.log(num - current);
-      // if (deltaX > 1) {
-      //   gsap.to(groupRef.current.position, {
-      //     x: current - 4 * deltaX,
-      //     duration: 0.5,
-      //     onComplete: () => {
-      //       setCurrent(current - 4 * deltaX);
-      //     },
-      //   });
-      // } else {
-      if (current - num > 1.4) {
-        if (deltaX > 1) {
-          gsap.to(groupRef.current.position, {
-            x: current - 4 * deltaX,
-            duration: 0.5,
-            onComplete: () => {
-              setCurrent(current - 4 * deltaX);
-            },
-          });
+  // console.log(groupRef.current?.position.x);
+  // console.log(current);
+
+  const nextPageHandler = () => {
+    if (wheelOrArrow == "wheel") {
+      if (offset > 1) {
+        num = current - 3 * offset;
+        if (num < -18) {
+          calcNext(num - current);
         } else {
           gsap.to(groupRef.current.position, {
-            x: current - 4,
-            duration: 0.5,
+            x: num,
+            duration: 0.15,
             onComplete: () => {
-              setCurrent(current - 4);
+              setCurrent(current - 3 * offset);
+              setIsChanged(true);
             },
           });
         }
       } else {
-        gsap.to(groupRef.current.position, {
-          x: num,
+        num = groupRef.current.position.x - 0.1;
 
-          onComplete: () => {
-            setCurrent(current);
-          },
-        });
-        // }
+        if (current - num > 0.5) {
+          if (num < -18) {
+            calcNext(-3);
+          } else {
+            gsap.to(groupRef.current.position, {
+              onStart: () => {
+                // console.log(groupRef.current.position.x, "start");
+              },
+              x: current - 3,
+              delay: 0.05,
+              duration: 0.1,
+              onComplete: () => {
+                // console.log(groupRef.current.position.x, "end");
+                setCurrent(current - 3);
+                setIsChanged(true);
+              },
+            });
+          }
+        } else {
+          setCurve(0.005);
+          gsap.to(groupRef.current.position, {
+            x: num,
+            // delay: 0.01,
+            // duration: 0.2,
+            onComplete: () => {},
+          });
+        }
       }
     } else {
+      if (current < -15) {
+        calcNext(-3);
+      } else {
+        gsap.to(groupRef.current.position, {
+          x: current - 3,
+          onComplete: () => {
+            setCurrent(current - 3);
+          },
+        });
+      }
+    }
+  };
+  const calcNext = (num: any) => {
+    num = 24 + num;
+    gsap.to(groupRef.current.position, {
+      x: num,
+      duration: 0.001,
+      onComplete: () => {
+        setCurrent(num);
+      },
+    });
+    // gsap.to(groupRef.current.position, {
+    //   x: num,
+    //   onComplete: () => {
+    //     setCurrent(num);
+    //   },
+    // });
+  };
+
+  // const calcPrev = () => {
+  //   gsap.to(groupRef.current.position, {
+  //     x: 21,
+  //     onComplete: () => {
+  //       setCurrent(21);
+  //     },
+  //   });
+  // };
+  useEffect(() => {
+    if (deltaX > 120) {
+      offset = Math.ceil(deltaX / 120);
+    }
+    console.log(deltaX);
+
+    if (nextPage) {
+      nextPageHandler();
+    }
+
+    if (
+      !active &&
+      groupRef.current.position.x % 3 !== 0 &&
+      wheelOrArrow == "wheel"
+    ) {
       gsap.to(groupRef.current.position, {
         x: current,
+        duration: 1,
+        onComplete: () => {},
       });
     }
-  });
+  }, [nextPage, deltaX, active]);
 
   return (
     <group position={[0, 0.1, 1.5]}>
-      <a.group position={[0, 0, 0]} ref={groupRef}>
+      <group position={[0, 0, 0]} ref={groupRef}>
         {pages.map((data: any, index: number) => (
           <M
             key={index}
             position={data.position}
             texture={colorMap[index]}
-            name={data.name}
-            id={index}
+            xValue={current}
+            curve={curve}
+            isChanged={isChanged}
+            setIsChanged={setIsChanged}
           ></M>
         ))}
-      </a.group>
+      </group>
     </group>
   );
 }
 
-const M = ({ id, position, texture }: any) => {
+const M = ({
+  position,
+  texture,
+  xValue,
+  curve,
+  setIsChanged,
+  isChanged,
+}: any) => {
   const { viewport } = useThree();
   const geometry: any = new PlaneGeometry(2, 0.5, 20, 20);
+
+  const { active } = useUsefulHooks();
 
   let shape: any = useRef();
   const shader: any = useRef();
 
   useFrame((state, delta) => {
-    // shader.current.time = MathUtils.lerp(shader.current.time, 0.5, 0.04);
-    shader.current.time = 0;
+    if (shape.current) {
+      shader.current.opacity = 1;
+
+      gsap.to(shape.current.scale, {
+        x: 1.4,
+        y: 1.4,
+      });
+
+      if (Math.abs(shape.current.position.x) !== Math.abs(xValue)) {
+        shader.current.opacity = 0.5;
+
+        gsap.to(shape.current.scale, {
+          x: 0.8,
+          y: 0.8,
+        });
+      }
+    }
+    if (active) {
+      shader.current.time += curve;
+    } else {
+      if (shader.current.time > 0 && !isChanged) {
+        shader.current.time -= curve;
+      } else {
+        shader.current.time = 0;
+        setIsChanged(false);
+      }
+    }
   });
 
   return (
-    <mesh key={id} geometry={geometry} ref={shape} position={[position, 0, 0]}>
+    <mesh
+      geometry={geometry}
+      ref={shape}
+      position={[position, 0, 0]}
+      scale={1.4}
+    >
       <shading
         ref={shader}
         time={0}
@@ -214,6 +327,8 @@ const M = ({ id, position, texture }: any) => {
         toneMapped={false}
         heightFactor={viewport.width * 0.04}
         transparent={true}
+        uActive={active}
+        opacity={1}
       ></shading>
     </mesh>
   );
@@ -227,12 +342,16 @@ const Shading = shaderMaterial(
     texture1: null,
     shaper: false,
     heightFactor: 1,
+    opacity: 1,
+    uActive: false,
   },
   // vertexShader
   /*glsl*/ `
         // uniform float time;
         uniform float time;
         uniform float heightFactor;
+        uniform bool uActive;
+
         // varying vec2 vUv;
         varying vec2 vUv;
 
@@ -247,22 +366,19 @@ const Shading = shaderMaterial(
     
             float progress = clamp(time, 0.0, 1.0);
     
-            // TWIRL
             float twistAmount = M_PI * 2.;
             float direction = sign(cos(M_PI * progress));
     
-            float twirlPeriod = sin(progress * M_PI*2.);
-    
+            float twirlPeriod = sin(progress * M_PI * 2.);
+
             float rotateAngle = -direction * pow(sin(progress * M_PI), 1.5) * twistAmount;
             float twirlAngle = -sin(uv.x -.5) * pow(twirlPeriod, 2.0) * -6.;
             pos = rotateAxis(pos, vec3(1., 0., 0.), rotateAngle + twirlAngle);
-    
-    
-            // SCALE on the sides
-            // float scale = pow(abs(cos(time * M_PI)), 2.0) * .33;
-            // pos *= 1. - scale;
-            // pos.y -= scale * heightFactor * 0.35;
-            // pos.x += cos(time * M_PI) * -.02;
+
+          // float scale = pow(abs(cos(time * M_PI)), 2.0) * .33;
+          // pos *= 1. - scale;
+          // pos.y -= scale * heightFactor * 0.35;
+          // pos.x += cos(uScale * M_PI) * -.02;
     
             gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
                         vUv = uv;
@@ -273,13 +389,13 @@ const Shading = shaderMaterial(
   // fragment shader
   /*glsl*/ `
     uniform float time;
+    uniform float opacity;
     uniform sampler2D texture1;
     varying vec2 vUv;
 
     void main() {
         vec2 cuv = vUv;
-        vec4 textureColor = texture2D(texture1, cuv);
-        // gl_FragColor = vec4(textureColor.rgb, 0.5); // Set the alpha (opacity) to 0.5
+        vec4 textureColor = texture2D(texture1, cuv ) * opacity;
         gl_FragColor = textureColor; // Set the color as needed
     }
   `
