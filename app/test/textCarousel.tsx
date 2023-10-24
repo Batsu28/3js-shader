@@ -119,10 +119,12 @@ export default function SpiralPlane({ setChange }: any) {
   ];
   const colorMap: any = useTexture(textTexture);
 
-  const [current, setCurrent] = useState(0);
+  let [current, setCurrent] = useState(0);
+
   const [curve, setCurve] = useState(0);
   const [isChanged, setIsChanged] = useState(false);
   const [back, setBack] = useState(false);
+  const [highNum, setHighNum] = useState(1);
 
   const {
     prevPage,
@@ -133,79 +135,92 @@ export default function SpiralPlane({ setChange }: any) {
     deltaX,
     active,
   } = useUsefulHooks();
+
   let offset: number = 1;
   let num = 0;
 
   // console.log(groupRef.current?.position.x);
-  // console.log(current);
+  console.log(current);
 
-  const nextPageHandler = () => {
-    if (wheelOrArrow == "wheel") {
-      if (offset > 1) {
-        num = current - 3 * offset;
-        if (num < -18) {
+  const nextPageWheel = () => {
+    if (deltaX > 120) {
+      offset = Math.ceil(deltaX / 120);
+      if (highNum < offset) {
+        setHighNum(offset);
+      }
+    }
+    if (offset > 1) {
+      if (offset >= highNum) {
+        num = current - 3 * highNum;
+        if (num < -15) {
           calcNext(num - current);
         } else {
           gsap.to(groupRef.current.position, {
-            x: num,
-            duration: 0.15,
-            onComplete: () => {
-              setCurrent(current - 3 * offset);
+            onStart: () => {
               setIsChanged(true);
             },
-          });
-        }
-      } else {
-        num = groupRef.current.position.x - 0.1;
-
-        if (current - num > 0.5) {
-          if (num < -18) {
-            calcNext(-3);
-          } else {
-            gsap.to(groupRef.current.position, {
-              onStart: () => {
-                // console.log(groupRef.current.position.x, "start");
-              },
-              x: current - 3,
-              delay: 0.05,
-              duration: 0.1,
-              onComplete: () => {
-                // console.log(groupRef.current.position.x, "end");
-                setCurrent(current - 3);
-                setIsChanged(true);
-              },
-            });
-          }
-        } else {
-          setCurve(0.005);
-          gsap.to(groupRef.current.position, {
             x: num,
-            // delay: 0.01,
-            // duration: 0.2,
-            onComplete: () => {},
+            duration: 0.5,
+            onComplete: () => {
+              setCurrent(current - 3 * highNum);
+              setHighNum(1);
+              // setIsChanged(true);
+              // updateToFalse();
+            },
           });
         }
       }
     } else {
-      if (current < -15) {
-        calcNext(-3);
-      } else {
+      num = groupRef.current.position.x - 0.1;
+
+      if (current - num > 1) {
+        if (num < -18) {
+          calcNext(-3);
+        } else {
+          gsap.to(groupRef.current.position, {
+            onStart: () => {
+              setIsChanged(true);
+              setCurve(0.0053);
+            },
+            x: current - 3,
+            duration: 0.5,
+            onComplete: () => {
+              setCurrent(current - 3);
+              // setIsChanged(true);
+            },
+          });
+        }
+      } else if (!isChanged) {
+        if (current - num > 0.5) {
+          setCurve(0.0053);
+        }
+
         gsap.to(groupRef.current.position, {
-          x: current - 3,
-          onComplete: () => {
-            setCurrent(current - 3);
+          onStart: () => {
+            setIsChanged(false);
           },
+          x: num,
+          // delay: 0.01,
+          duration: 0.5,
+          onComplete: () => {},
         });
       }
     }
   };
-  const calcNext = (num: any) => {
+  const calcNext = (num: any, key?: any) => {
     num = 24 + num;
+    groupRef.current.position.x = 21;
     gsap.to(groupRef.current.position, {
+      onStart: () => {
+        setCurve(0.01);
+      },
       x: num,
-      duration: 0.001,
+      duration: 0.5,
       onComplete: () => {
         setCurrent(num);
+        setIsChanged(true);
+
+        key && updateToFalse();
       },
     });
     // gsap.to(groupRef.current.position, {
@@ -215,37 +230,68 @@ export default function SpiralPlane({ setChange }: any) {
     //   },
     // });
   };
-
-  // const calcPrev = () => {
-  //   gsap.to(groupRef.current.position, {
-  //     x: 21,
-  //     onComplete: () => {
-  //       setCurrent(21);
-  //     },
-  //   });
-  // };
-  useEffect(() => {
-    if (deltaX > 120) {
-      offset = Math.ceil(deltaX / 120);
-    }
-    console.log(deltaX);
-
-    if (nextPage) {
-      nextPageHandler();
-    }
-
-    if (
-      !active &&
-      groupRef.current.position.x % 3 !== 0 &&
-      wheelOrArrow == "wheel"
-    ) {
+  const changePageKey = (limit: number, change: number) => {
+    if (current < limit) {
+      calcNext(change, true);
+    } else {
       gsap.to(groupRef.current.position, {
-        x: current,
-        duration: 1,
-        onComplete: () => {},
+        x: current + change,
+        onComplete: () => {
+          setCurrent(current + change);
+          updateToFalse();
+        },
       });
     }
-  }, [nextPage, deltaX, active]);
+  };
+
+  const calcPrev = () => {
+    gsap.to(groupRef.current.position, {
+      x: 21,
+      onComplete: () => {
+        setCurrent(21);
+      },
+    });
+  };
+
+  const bacToCurrent = () => {
+    if (!active) {
+      gsap.to(groupRef.current.position, {
+        onStart: () => {
+          setIsChanged(false);
+        },
+        x: current,
+        duration: 1,
+        onComplete: () => {
+          setBack(false);
+          // setIsChanged(false);
+        },
+      });
+    }
+  };
+
+  // useEffect(() => {
+  //   if (!active) {
+  //     setBack(true);
+  //   }
+  // }, [!active]);
+
+  useFrame(() => {
+    if (wheelOrArrow === "arrow") {
+      bacToCurrent();
+      if (nextPage) {
+        changePageKey(-15, -3);
+      }
+      // else if (prevPage) {
+      //   changePageKey(18, 3);
+      // }
+    }
+
+    if (wheelOrArrow === "wheel") {
+      if (nextPage) {
+        nextPageWheel();
+      }
+    }
+  });
 
   return (
     <group position={[0, 0.1, 1.5]}>
@@ -283,23 +329,23 @@ const M = ({
   const shader: any = useRef();
 
   useFrame((state, delta) => {
-    if (shape.current) {
-      shader.current.opacity = 1;
+    // if (shape.current) {
+    //   shader.current.opacity = 1;
 
-      gsap.to(shape.current.scale, {
-        x: 1.4,
-        y: 1.4,
-      });
+    //   gsap.to(shape.current.scale, {
+    //     x: 1.4,
+    //     y: 1.4,
+    //   });
 
-      if (Math.abs(shape.current.position.x) !== Math.abs(xValue)) {
-        shader.current.opacity = 0.5;
+    //   if (Math.abs(shape.current.position.x) !== Math.abs(xValue)) {
+    //     shader.current.opacity = 1;
 
-        gsap.to(shape.current.scale, {
-          x: 0.8,
-          y: 0.8,
-        });
-      }
-    }
+    //     gsap.to(shape.current.scale, {
+    //       x: 0.8,
+    //       y: 0.8,
+    //     });
+    //   }
+    // }
     if (active) {
       shader.current.time += curve;
     } else {
@@ -372,13 +418,8 @@ const Shading = shaderMaterial(
             float twirlPeriod = sin(progress * M_PI * 2.);
 
             float rotateAngle = -direction * pow(sin(progress * M_PI), 1.5) * twistAmount;
-            float twirlAngle = -sin(uv.x -.5) * pow(twirlPeriod, 2.0) * -6.;
+            float twirlAngle = -sin(uv.x - .1) * pow(twirlPeriod, 2.0) * -6.;
             pos = rotateAxis(pos, vec3(1., 0., 0.), rotateAngle + twirlAngle);
-
-          // float scale = pow(abs(cos(time * M_PI)), 2.0) * .33;
-          // pos *= 1. - scale;
-          // pos.y -= scale * heightFactor * 0.35;
-          // pos.x += cos(uScale * M_PI) * -.02;
     
             gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
                         vUv = uv;
