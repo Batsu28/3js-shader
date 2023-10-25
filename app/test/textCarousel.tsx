@@ -140,30 +140,34 @@ export default function SpiralPlane({ setChange }: any) {
   let num = 0;
 
   // console.log(groupRef.current?.position.x);
-  console.log(current);
+  // console.log(Math.floor(121 / 120));
 
   const nextPageWheel = () => {
     if (deltaX > 120) {
-      offset = Math.ceil(deltaX / 120);
+      offset = Math.floor(deltaX / 120);
       if (highNum < offset) {
         setHighNum(offset);
       }
     }
     if (offset > 1) {
       if (offset >= highNum) {
-        num = current - 3 * highNum;
-        if (num < -15) {
+        num = current - 3 * offset;
+        if (num < -18) {
           calcNext(num - current);
         } else {
           gsap.to(groupRef.current.position, {
             onStart: () => {
+              setBack(true);
+
               setIsChanged(true);
             },
             x: num,
             duration: 0.5,
             onComplete: () => {
-              setCurrent(current - 3 * highNum);
+              setCurrent(current - 3 * offset);
               setHighNum(1);
+              setBack(false);
+
               // setIsChanged(true);
               // updateToFalse();
             },
@@ -179,6 +183,8 @@ export default function SpiralPlane({ setChange }: any) {
         } else {
           gsap.to(groupRef.current.position, {
             onStart: () => {
+              setBack(true);
+
               setIsChanged(true);
               setCurve(0.0053);
             },
@@ -187,6 +193,7 @@ export default function SpiralPlane({ setChange }: any) {
             onComplete: () => {
               setCurrent(current - 3);
               // setIsChanged(true);
+              setBack(false);
             },
           });
         }
@@ -213,12 +220,14 @@ export default function SpiralPlane({ setChange }: any) {
     gsap.to(groupRef.current.position, {
       onStart: () => {
         setCurve(0.01);
+        setBack(true);
       },
       x: num,
       duration: 0.5,
       onComplete: () => {
         setCurrent(num);
         setIsChanged(true);
+        setBack(false);
 
         key && updateToFalse();
       },
@@ -244,6 +253,78 @@ export default function SpiralPlane({ setChange }: any) {
     }
   };
 
+  const prevPageWheel = () => {
+    if (deltaX > 120) {
+      offset = Math.floor(deltaX / 120);
+      if (highNum < offset) {
+        setHighNum(offset);
+      }
+    }
+    if (offset > 1) {
+      if (offset >= highNum) {
+        num = current + 3 * offset;
+        if (num < 21) {
+          // calcNext(num + current);
+        } else {
+          gsap.to(groupRef.current.position, {
+            onStart: () => {
+              setBack(true);
+
+              setIsChanged(true);
+            },
+            x: num,
+            duration: 0.5,
+            onComplete: () => {
+              setCurrent(num);
+              setHighNum(1);
+              setBack(false);
+
+              // setIsChanged(true);
+              // updateToFalse();
+            },
+          });
+        }
+      }
+    } else {
+      num = groupRef.current.position.x + 0.1;
+
+      if (num - current > 1) {
+        if (num > 21) {
+          // calcNext(3);
+        } else {
+          gsap.to(groupRef.current.position, {
+            onStart: () => {
+              setBack(true);
+
+              setIsChanged(true);
+              setCurve(0.0053);
+            },
+            x: current + 3,
+            duration: 0.5,
+            onComplete: () => {
+              setCurrent(current + 3);
+              // setIsChanged(true);
+              setBack(false);
+            },
+          });
+        }
+      } else if (!isChanged) {
+        if (num - current > 0.5) {
+          setCurve(0.0053);
+        }
+
+        gsap.to(groupRef.current.position, {
+          onStart: () => {
+            setIsChanged(false);
+          },
+          x: num,
+          // delay: 0.01,
+          duration: 0.5,
+          onComplete: () => {},
+        });
+      }
+    }
+  };
   const calcPrev = () => {
     gsap.to(groupRef.current.position, {
       x: 21,
@@ -254,7 +335,7 @@ export default function SpiralPlane({ setChange }: any) {
   };
 
   const bacToCurrent = () => {
-    if (!active) {
+    if (!active && wheelOrArrow === "wheel") {
       gsap.to(groupRef.current.position, {
         onStart: () => {
           setIsChanged(false);
@@ -269,15 +350,8 @@ export default function SpiralPlane({ setChange }: any) {
     }
   };
 
-  // useEffect(() => {
-  //   if (!active) {
-  //     setBack(true);
-  //   }
-  // }, [!active]);
-
   useFrame(() => {
     if (wheelOrArrow === "arrow") {
-      bacToCurrent();
       if (nextPage) {
         changePageKey(-15, -3);
       }
@@ -287,8 +361,14 @@ export default function SpiralPlane({ setChange }: any) {
     }
 
     if (wheelOrArrow === "wheel") {
+      if (groupRef.ref?.position.x % 3 !== 0 && !back) {
+        bacToCurrent();
+      }
+
       if (nextPage) {
         nextPageWheel();
+      } else if (prevPage) {
+        prevPageWheel();
       }
     }
   });
