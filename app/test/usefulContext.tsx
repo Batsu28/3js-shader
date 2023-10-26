@@ -13,48 +13,50 @@ export const UsefulProvider = (props: any) => {
   const [active, setActive] = useState(false);
   let isWheelEventTriggered: any = null;
 
-  const handleDelta = (eventDelta: any) => {
-    const deltaValue = Math.abs(eventDelta);
-    if (deltaValue > deltaX) {
-      setDeltaX(deltaValue);
-    }
-  };
-
   const handleWheel = (e: any) => {
     setWheelOrArrow("wheel");
-    setActive(true);
     const deltaY = e.deltaY;
-    // const eventDelta = e.wheelDelta;
     const eventDelta = e.deltaX;
+    const deltaValue = Math.abs(eventDelta);
 
-    // console.log(e.wheelDelta);
-    // console.log(deltaX);
+    setActive(true);
+    if (deltaValue > deltaX && deltaValue <= 1000) {
+      setDeltaX(deltaValue);
+    }
+
     if (eventDelta < 0) {
       setPrevPage(true);
+      setNextPage(false);
+
       setLastAction("prev");
-      handleDelta(eventDelta);
     } else if (eventDelta > 0) {
       setNextPage(true);
+      setPrevPage(false);
+
       setLastAction("next");
-      handleDelta(eventDelta);
     }
 
     clearTimeout(isWheelEventTriggered);
     isWheelEventTriggered = setTimeout(() => {
+      // setPrevPage(false);
+      // setNextPage(false);
       setActive(false);
-      setPrevPage(false);
-      setNextPage(false);
       setDeltaX(0);
     }, 200);
   };
 
   const handleKeyDown = (e: any) => {
-    setWheelOrArrow("arrow");
     if (e.key === "ArrowLeft") {
       setPrevPage(true);
+      setNextPage(false);
+      setWheelOrArrow("arrow");
+
       setLastAction("prev");
     } else if (e.key === "ArrowRight") {
       setNextPage(true);
+      setPrevPage(false);
+      setWheelOrArrow("arrow");
+
       setLastAction("next");
     }
   };

@@ -13,46 +13,10 @@ gsap.registerPlugin();
 
 const pages = [
   {
-    name: "firefly",
-    title: "Image 2",
-    imagePath: "/08-firefly.png",
-    position: -21,
-  },
-  {
-    name: "slinky",
-    title: "Image 3",
-    imagePath: "/09-slinky.png",
-    position: -18,
-  },
-  {
-    name: "t1000",
-    title: "Image 3",
-    imagePath: "/10-t1000.png",
-    position: -15,
-  },
-  {
-    name: "genesys",
-    title: "Image 3",
-    imagePath: "/11-genesys.png",
-    position: -12,
-  },
-  {
-    name: "protocool",
-    title: "Image 3",
-    imagePath: "/12-protocool.png",
-    position: -9,
-  },
-  {
-    name: "liquidity",
-    title: "Image 3",
-    imagePath: "/13-liquidity.png",
-    position: -6,
-  },
-  {
     name: "lips",
     title: "Image 3",
     imagePath: "/14-lipsync.png",
-    position: -3,
+    position: -4,
   },
   {
     name: "fomosphere",
@@ -64,50 +28,91 @@ const pages = [
     name: "disco",
     title: "Image 2",
     imagePath: "/02-discobrain.png",
-    position: 3,
+    position: 4,
   },
 
   {
     name: "cyberfly",
     title: "Image 3",
     imagePath: "/03-cyberfly.png",
-    position: 6,
+    position: 8,
   },
   {
     name: "twistertoy",
     title: "Image 1",
     imagePath: "/04-twistertoy.png",
-    position: 9,
+    position: 12,
   },
   {
     name: "fungible",
     title: "Image 2",
     imagePath: "/05-fungible.png",
-    position: 12,
+    position: 16,
   },
   {
     name: "metalness",
     title: "Image 3",
     imagePath: "/06-metalness.png",
-    position: 15,
+    position: 20,
   },
   {
     name: "metagum",
     title: "Image 1",
     imagePath: "/07-metagum.png",
-    position: 18,
+    position: 24,
+  },
+  {
+    name: "firefly",
+    title: "Image 2",
+    imagePath: "/08-firefly.png",
+    position: 28,
+  },
+  {
+    name: "slinky",
+    title: "Image 3",
+    imagePath: "/09-slinky.png",
+    position: 32,
+  },
+  {
+    name: "t1000",
+    title: "Image 3",
+    imagePath: "/10-t1000.png",
+    position: 36,
+  },
+  {
+    name: "genesys",
+    title: "Image 3",
+    imagePath: "/11-genesys.png",
+    position: 40,
+  },
+  {
+    name: "protocool",
+    title: "Image 3",
+    imagePath: "/12-protocool.png",
+    position: 44,
+  },
+  {
+    name: "liquidity",
+    title: "Image 3",
+    imagePath: "/13-liquidity.png",
+    position: 48,
+  },
+  {
+    name: "lips",
+    title: "Image 3",
+    imagePath: "/14-lipsync.png",
+    position: 52,
+  },
+  {
+    name: "fomosphere",
+    title: "Image 1",
+    imagePath: "/01-fomosphere.png",
+    position: 56,
   },
 ];
-
 export default function SpiralPlane({ setChange }: any) {
   const groupRef: any = useRef();
   const textTexture = [
-    "/08-firefly.png",
-    "/09-slinky.png",
-    "/10-t1000.png",
-    "/11-genesys.png",
-    "/12-protocool.png",
-    "/13-liquidity.png",
     "/14-lipsync.png",
     "/01-fomosphere.png",
     "/02-discobrain.png",
@@ -116,14 +121,21 @@ export default function SpiralPlane({ setChange }: any) {
     "/05-fungible.png",
     "/06-metalness.png",
     "/07-metagum.png",
+    "/08-firefly.png",
+    "/09-slinky.png",
+    "/10-t1000.png",
+    "/11-genesys.png",
+    "/12-protocool.png",
+    "/13-liquidity.png",
+    "/14-lipsync.png",
+    "/01-fomosphere.png",
   ];
   const colorMap: any = useTexture(textTexture);
 
   let [current, setCurrent] = useState(0);
 
-  const [curve, setCurve] = useState(0);
+  const [curve, setCurve] = useState(0.0053);
   const [isChanged, setIsChanged] = useState(false);
-  const [back, setBack] = useState(false);
   const [highNum, setHighNum] = useState(1);
 
   const {
@@ -138,204 +150,228 @@ export default function SpiralPlane({ setChange }: any) {
 
   let offset: number = 1;
   let num = 0;
-
-  // console.log(groupRef.current?.position.x);
-  // console.log(Math.floor(121 / 120));
-
-  const nextPageWheel = () => {
-    if (deltaX > 120) {
-      offset = Math.floor(deltaX / 120);
-      if (highNum < offset) {
-        setHighNum(offset);
-      }
-    }
-    if (offset > 1) {
-      if (offset >= highNum) {
-        num = current - 3 * offset;
-        if (num < -18) {
-          calcNext(num - current);
-        } else {
-          gsap.to(groupRef.current.position, {
-            onStart: () => {
-              setBack(true);
-
-              setIsChanged(true);
-            },
-            x: num,
-            duration: 0.5,
-            onComplete: () => {
-              setCurrent(current - 3 * offset);
-              setHighNum(1);
-              setBack(false);
-
-              // setIsChanged(true);
-              // updateToFalse();
-            },
-          });
-        }
-      }
-    } else {
-      num = groupRef.current.position.x - 0.1;
-
-      if (current - num > 1) {
-        if (num < -18) {
-          calcNext(-3);
-        } else {
-          gsap.to(groupRef.current.position, {
-            onStart: () => {
-              setBack(true);
-
-              setIsChanged(true);
-              setCurve(0.0053);
-            },
-            x: current - 3,
-            duration: 0.5,
-            onComplete: () => {
-              setCurrent(current - 3);
-              // setIsChanged(true);
-              setBack(false);
-            },
-          });
-        }
-      } else if (!isChanged) {
-        if (current - num > 0.5) {
-          setCurve(0.0053);
-        }
-
-        gsap.to(groupRef.current.position, {
-          onStart: () => {
-            setIsChanged(false);
-          },
-          x: num,
-          // delay: 0.01,
-          duration: 0.5,
-          onComplete: () => {},
-        });
-      }
-    }
-  };
-  const calcNext = (num: any, key?: any) => {
-    num = 24 + num;
-    groupRef.current.position.x = 21;
-    gsap.to(groupRef.current.position, {
-      onStart: () => {
-        setCurve(0.01);
-        setBack(true);
-      },
-      x: num,
-      duration: 0.5,
-      onComplete: () => {
-        setCurrent(num);
-        setIsChanged(true);
-        setBack(false);
-
-        key && updateToFalse();
-      },
-    });
-    // gsap.to(groupRef.current.position, {
-    //   x: num,
-    //   onComplete: () => {
-    //     setCurrent(num);
-    //   },
-    // });
-  };
-  const changePageKey = (limit: number, change: number) => {
-    if (current < limit) {
-      calcNext(change, true);
-    } else {
-      gsap.to(groupRef.current.position, {
-        x: current + change,
-        onComplete: () => {
-          setCurrent(current + change);
-          updateToFalse();
+  //next
+  const calcNext = (value: any, key?: any) => {
+    value = 56 + value;
+    gsap.fromTo(
+      groupRef.current.position,
+      { x: 4 },
+      {
+        onStart: () => {
+          setIsChanged(true);
         },
-      });
-    }
+        x: 0,
+        duration: 0.5,
+        onComplete: () => {
+          setCurrent(value);
+          key && updateToFalse();
+        },
+      }
+    );
   };
-
-  const prevPageWheel = () => {
-    if (deltaX > 120) {
-      offset = Math.floor(deltaX / 120);
-      if (highNum < offset) {
+  const nextPageWheel = () => {
+    if (deltaX > 100) {
+      offset = Math.floor(deltaX / 100);
+      if (offset > highNum) {
         setHighNum(offset);
       }
     }
-    if (offset > 1) {
-      if (offset >= highNum) {
-        num = current + 3 * offset;
-        if (num < 21) {
-          // calcNext(num + current);
-        } else {
-          gsap.to(groupRef.current.position, {
-            onStart: () => {
-              setBack(true);
+    if (offset > 1 && offset >= highNum) {
+      num = current - 4 * highNum;
 
+      if (num < -48) {
+        gsap.fromTo(
+          groupRef.current.position,
+          { x: current },
+          {
+            x: -52,
+            onComplete: () => {
+              calcNext(num);
+            },
+          }
+        );
+      } else {
+        gsap.fromTo(
+          groupRef.current.position,
+          {
+            x: groupRef.current.position.x,
+          },
+          {
+            onStart: () => {
               setIsChanged(true);
             },
+            // onInterrupt: () => {
+            //   setCurrent(current);
+            // },
             x: num,
             duration: 0.5,
             onComplete: () => {
               setCurrent(num);
               setHighNum(1);
-              setBack(false);
-
-              // setIsChanged(true);
-              // updateToFalse();
             },
-          });
-        }
+          }
+        );
       }
-    } else {
-      num = groupRef.current.position.x + 0.1;
+    } else if (offset === 1) {
+      num = groupRef.current.position.x - deltaX / 100;
 
-      if (num - current > 1) {
-        if (num > 21) {
-          // calcNext(3);
+      if (current - num > 1.4) {
+        if (num < -52) {
+          calcNext(-56);
         } else {
-          gsap.to(groupRef.current.position, {
-            onStart: () => {
-              setBack(true);
-
-              setIsChanged(true);
-              setCurve(0.0053);
+          gsap.fromTo(
+            groupRef.current.position,
+            {
+              x: groupRef.current.position.x,
             },
-            x: current + 3,
-            duration: 0.5,
-            onComplete: () => {
-              setCurrent(current + 3);
-              // setIsChanged(true);
-              setBack(false);
-            },
-          });
+            {
+              onStart: () => {
+                setIsChanged(true);
+              },
+              x: current - 4,
+              duration: 0.4,
+              onInterrupt: () => {
+                setCurrent(current);
+              },
+              onComplete: () => {
+                setCurrent(current - 4);
+              },
+            }
+          );
         }
       } else if (!isChanged) {
-        if (num - current > 0.5) {
-          setCurve(0.0053);
-        }
-
         gsap.to(groupRef.current.position, {
           onStart: () => {
             setIsChanged(false);
           },
+          onInterrupt: () => {
+            setCurrent(current);
+          },
           x: num,
-          // delay: 0.01,
-          duration: 0.5,
+          duration: 0.2,
           onComplete: () => {},
         });
       }
     }
   };
-  const calcPrev = () => {
-    gsap.to(groupRef.current.position, {
-      x: 21,
-      onComplete: () => {
-        setCurrent(21);
-      },
-    });
+  const nextPageKey = () => {
+    if (current < -48) {
+      calcNext(-56, true);
+    } else {
+      gsap.to(groupRef.current.position, {
+        x: current - 4,
+        onUpdate: () => {
+          updateToFalse();
+        },
+        onComplete: () => {
+          setCurrent(current - 4);
+        },
+      });
+    }
   };
 
+  //prev
+  const calcPrev = (value: any, key?: any) => {
+    value = value - 56;
+    gsap.fromTo(
+      groupRef.current.position,
+      { x: -56 },
+      {
+        onStart: () => {
+          setIsChanged(true);
+        },
+        x: value,
+        duration: 0.5,
+        onComplete: () => {
+          setCurrent(value);
+          key && updateToFalse();
+        },
+      }
+    );
+  };
+  const prevPageWheel = () => {
+    if (deltaX > 100) {
+      offset = Math.floor(deltaX / 100);
+      if (offset > highNum) {
+        setHighNum(offset);
+      }
+    }
+    if (offset > 1 && offset >= highNum) {
+      num = current + 4 * offset;
+      if (num > 0) {
+        gsap.fromTo(
+          groupRef.current.position,
+          { x: current },
+          {
+            x: 0,
+            onComplete: () => {
+              calcPrev(num);
+            },
+          }
+        );
+      } else {
+        gsap.to(groupRef.current.position, {
+          onStart: () => {
+            setIsChanged(true);
+          },
+          x: num,
+          duration: 0.5,
+          onComplete: () => {
+            setCurrent(num);
+            setHighNum(1);
+          },
+        });
+      }
+    } else if (offset === 1) {
+      num = groupRef.current.position.x + deltaX / 100;
+
+      if (num - current > 1.4) {
+        if (num > 0) {
+          calcPrev(4);
+        } else {
+          gsap.to(groupRef.current.position, {
+            onStart: () => {
+              setIsChanged(true);
+            },
+            x: current + 4,
+            duration: 0.4,
+            onComplete: () => {
+              setCurrent(current + 4);
+            },
+          });
+        }
+      } else if (!isChanged) {
+        gsap.to(groupRef.current.position, {
+          onStart: () => {
+            setIsChanged(false);
+          },
+          x: num,
+          duration: 0.2,
+          onComplete: () => {},
+        });
+      }
+    }
+  };
+  const prevPageKey = () => {
+    if (current >= 0) {
+      calcPrev(4, true);
+    } else {
+      gsap.to(groupRef.current.position, {
+        x: current + 4,
+        onUpdate: () => {
+          updateToFalse();
+        },
+        onComplete: () => {
+          setCurrent(current + 4);
+        },
+      });
+    }
+  };
+
+  //back
   const bacToCurrent = () => {
-    if (!active && wheelOrArrow === "wheel") {
+    if (!active) {
+      // console.log("working");
       gsap.to(groupRef.current.position, {
         onStart: () => {
           setIsChanged(false);
@@ -343,7 +379,6 @@ export default function SpiralPlane({ setChange }: any) {
         x: current,
         duration: 1,
         onComplete: () => {
-          setBack(false);
           // setIsChanged(false);
         },
       });
@@ -351,17 +386,22 @@ export default function SpiralPlane({ setChange }: any) {
   };
 
   useFrame(() => {
+    if (active && deltaX === 0) return;
     if (wheelOrArrow === "arrow") {
       if (nextPage) {
-        changePageKey(-15, -3);
+        nextPageKey();
+      } else if (prevPage) {
+        prevPageKey();
       }
-      // else if (prevPage) {
-      //   changePageKey(18, 3);
-      // }
     }
 
     if (wheelOrArrow === "wheel") {
-      if (groupRef.ref?.position.x % 3 !== 0 && !back) {
+      // if (!back) {
+      if (
+        groupRef.current?.position.x % 4 > -4 &&
+        groupRef.current?.position.x % 4 < 4 &&
+        !isChanged
+      ) {
         bacToCurrent();
       }
 
@@ -392,18 +432,13 @@ export default function SpiralPlane({ setChange }: any) {
   );
 }
 
-const M = ({
-  position,
-  texture,
-  xValue,
-  curve,
-  setIsChanged,
-  isChanged,
-}: any) => {
+const damp = MathUtils.damp;
+
+const M = ({ position, texture, setIsChanged, isChanged }: any) => {
   const { viewport } = useThree();
   const geometry: any = new PlaneGeometry(2, 0.5, 20, 20);
 
-  const { active } = useUsefulHooks();
+  const { active, lastAction, nextPage } = useUsefulHooks();
 
   let shape: any = useRef();
   const shader: any = useRef();
@@ -427,10 +462,14 @@ const M = ({
     //   }
     // }
     if (active) {
-      shader.current.time += curve;
+      nextPage
+        ? (shader.current.time += damp(0, 0.1, 0.5, 0.12))
+        : (shader.current.time -= damp(0, 0.1, 0.5, 0.12));
     } else {
       if (shader.current.time > 0 && !isChanged) {
-        shader.current.time -= curve;
+        lastAction == "next"
+          ? (shader.current.time -= damp(0, 0.1, 0.5, 0.12))
+          : (shader.current.time += damp(0, 0.1, 0.5, 0.12));
       } else {
         shader.current.time = 0;
         setIsChanged(false);
@@ -517,7 +556,7 @@ const Shading = shaderMaterial(
     void main() {
         vec2 cuv = vUv;
         vec4 textureColor = texture2D(texture1, cuv ) * opacity;
-        gl_FragColor = textureColor; // Set the color as needed
+        gl_FragColor = textureColor; 
     }
   `
 );
