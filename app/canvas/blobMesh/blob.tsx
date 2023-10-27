@@ -3,18 +3,20 @@ import MagicalMaterial from "./materail/shaderMaterial";
 import { useTexture } from "@react-three/drei";
 import { animated, useSpring } from "@react-spring/three";
 
-const rainbow = "/rainbow.jpeg";
-const ocean = "/deep-ocean.jpeg";
-const cosmic = "/cosmic-fusion.jpeg";
-const passion = "/passion.jpeg";
-const white = "/white.jpeg";
-const sunset = "/sunset-vibes.jpeg";
-const iridescent = "/iridescent.jpeg";
-const cd = "/cd.jpeg";
-const halloween = "/halloween.jpeg";
-const floyd = "/floyd.jpeg";
-const hollogram = "/hollogram.jpeg";
-const imaginarium = "/imaginarium.jpeg";
+const blobTexture = [
+  "/rainbow.jpeg",
+  "/deep-ocean.jpeg",
+  "/cosmic-fusion.jpeg",
+  "/passion.jpeg",
+  "/white.jpeg",
+  "/sunset-vibes.jpeg",
+  "/iridescent.jpeg",
+  "/cd.jpeg",
+  "/halloween.jpeg",
+  "/floyd.jpeg",
+  "/hollogram.jpeg",
+  "/imaginarium.jpeg",
+];
 
 const AnimatedMagicalMaterial: any = animated(MagicalMaterial);
 
@@ -23,20 +25,7 @@ const Blob = ({ material, map, geometry }: any) => {
 
   const { scale, rotate } = geometry;
 
-  const textures = useTexture([
-    rainbow,
-    ocean,
-    cosmic,
-    passion,
-    white,
-    sunset,
-    iridescent,
-    cd,
-    halloween,
-    floyd,
-    hollogram,
-    imaginarium,
-  ]);
+  const textures = useTexture(blobTexture);
   const texture = textures[map];
 
   const AnimatedMaterial = useSpring({

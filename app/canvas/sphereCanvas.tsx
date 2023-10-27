@@ -1,45 +1,39 @@
 "use client";
 
-import {
-  CameraShake,
-  Environment,
-  OrbitControls,
-  Stats,
-} from "@react-three/drei";
-import * as THREE from "three";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useMemo } from "react";
+
+import { Environment, Stats } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import { animated } from "@react-spring/web";
+
 import Blob from "./blobMesh/blob";
 import Lights from "./light";
-import { animated } from "@react-spring/web";
 // import SpiralPlane from "./Text/SpiralPlane";
 import SpiralPlane from "../test/textCarousel";
+
 import { BlobSetting, Titles } from "../utils/blobSettings";
-import useWheel from "../hooks/useWheel";
-import { pages } from "./Text/data";
 import useUsefulHooks from "../hooks/useWheel";
+
 const SphereCanvas = ({ current, setCurrent }: any) => {
-  // const { bg, ambient, lights, ...restSetting } = useBlob();
-  const { prevPage, nextPage, lastAction }: any = useUsefulHooks();
-  // const [current, setCurrent] = useState(3);
+  const { prevPage, nextPage }: any = useUsefulHooks();
 
   const { bg, ambient, lights, ...restSetting } = useMemo(
-    () => BlobSetting[pages[current].name],
+    () => BlobSetting[Titles[Math.abs(current) / 4]],
     [nextPage, prevPage, current]
   );
 
   return (
     <animated.div
       className="w-full h-full"
-      style={{ background: bg, transition: "ease-out 0.5s" }}
+      style={{ background: bg, transition: "ease-out 0.4s" }}
     >
       <Canvas camera={{ position: [0, 0, 4], fov: 50 }}>
         <ambientLight intensity={ambient} />
 
         <Lights lights={lights} />
         <Suspense fallback={null}>
-          {/* <Blob {...restSetting} /> */}
-          <SpiralPlane />
+          <Blob {...restSetting} />
+          <SpiralPlane current={current} setCurrent={setCurrent} />
         </Suspense>
         <Stats />
         {/* <OrbitControls /> */}

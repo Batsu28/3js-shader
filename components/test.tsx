@@ -12,9 +12,6 @@ function Test({ current }: any) {
   const [isFollow, setIsFollow] = useState(false);
 
   const handleMouseOver = (e: any) => {
-    // console.log(e.pageX, e.pageY, "page");
-    // console.log(window.innerWidth, window.innerHeight, "window");
-    // console.log(e.clientX, e.clientY, "client");
     if (isFollow) {
       setPoint({
         x: e.pageX - window.innerWidth / 2,
@@ -54,8 +51,10 @@ function Test({ current }: any) {
       className="w-full h-full flex justify-center items-end absolute top-0 left-0 z-1"
       onMouseMove={handleMouseOver}
     >
-      <h3 className="absolute left-0 bottom-0 p-10">NFT Collection</h3>
-      <div className="m-5 p-10" onMouseOver={handleMouseEnter}>
+      <h3 className="absolute left-0 bottom-0 p-10 cursor-pointer headerBtn">
+        NFT Collection
+      </h3>
+      <div className="m-5 p-10 cursor-pointer" onMouseOver={handleMouseEnter}>
         <motion.div
           style={{
             transition: "all 0.2s ease",
@@ -67,11 +66,11 @@ function Test({ current }: any) {
           <RingSvg />
         </motion.div>
       </div>
-      <div>
-        <div className="w-[300px] h-[1px] absolute bottom-0 right-0 border-t-2 border-white m-10 opacity-50 "></div>
+      <div className="w-[300px] absolute bottom-0 right-0 m-10">
+        <div className="w-[300px] border-t-4 border-white opacity-50"></div>
         <motion.div
-          className=" h-[1px] absolute bottom-0 right-0 border-t-2 border-white m-10 "
-          animate={{ width: `${num * (current - 2)}px` }}
+          className="absolute bottom-0 left-0 border-t-4 border-white"
+          animate={{ width: `${num * (Math.abs(current) / 4) + num}px` }}
         ></motion.div>
       </div>
     </div>

@@ -19,8 +19,8 @@ export const UsefulProvider = (props: any) => {
     const eventDelta = e.deltaX;
     const deltaValue = Math.abs(eventDelta);
 
-    setActive(true);
     if (deltaValue > deltaX && deltaValue <= 1000) {
+      setActive(true);
       setDeltaX(deltaValue);
     }
 
