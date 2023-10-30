@@ -1,5 +1,7 @@
+import { useGesture } from "@use-gesture/react";
 import next from "next";
 import { useState, useEffect, createContext } from "react";
+import { MathUtils } from "three";
 
 const UsefulContext = createContext({} as any);
 
@@ -13,68 +15,57 @@ export const UsefulProvider = (props: any) => {
   const [active, setActive] = useState(false);
   let isWheelEventTriggered: any = null;
 
-  const handleWheel = (e: any) => {
-    setWheelOrArrow("wheel");
-    const deltaY = e.deltaY;
-    const eventDelta = e.deltaX;
-    const deltaValue = Math.abs(eventDelta);
-
-    if (deltaValue > deltaX && deltaValue <= 1000) {
-      setActive(true);
-      setDeltaX(deltaValue);
-    }
-
-    if (eventDelta < 0) {
-      setPrevPage(true);
-      setNextPage(false);
-
-      setLastAction("prev");
-    } else if (eventDelta > 0) {
-      setNextPage(true);
-      setPrevPage(false);
-
-      setLastAction("next");
-    }
-
-    clearTimeout(isWheelEventTriggered);
-    isWheelEventTriggered = setTimeout(() => {
-      // setPrevPage(false);
-      // setNextPage(false);
-      setActive(false);
-      setDeltaX(0);
-    }, 200);
-  };
-
-  const handleKeyDown = (e: any) => {
-    if (e.key === "ArrowLeft") {
-      setPrevPage(true);
-      setNextPage(false);
-      setWheelOrArrow("arrow");
-
-      setLastAction("prev");
-    } else if (e.key === "ArrowRight") {
-      setNextPage(true);
-      setPrevPage(false);
-      setWheelOrArrow("arrow");
-
-      setLastAction("next");
-    }
-  };
-
   const updateToFalse = () => {
     setPrevPage(false);
     setNextPage(false);
   };
+  if (typeof window !== "undefined") {
+    useGesture(
+      {
+        onWheel: (state) => {
+          setWheelOrArrow("wheel");
 
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("wheel", handleWheel);
+          const eventDelta = MathUtils.clamp(
+            state.delta[0] + state.delta[1],
+            -100,
+            100
+          );
 
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("wheel", handleWheel);
-    };
-  }, [hasDetectedDirection]); //
+          if (state.first) {
+            setActive(true);
+          }
+          setDeltaX(eventDelta);
+
+          if (eventDelta < 0) {
+            setPrevPage(true);
+            setNextPage(false);
+          } else if (eventDelta > 0) {
+            setNextPage(true);
+            setPrevPage(false);
+          }
+          if (state.last) {
+            setActive(false);
+            setDeltaX(0);
+          }
+        },
+        onKeyDown: (state) => {
+          if (state.event.key === "ArrowLeft") {
+            setPrevPage(true);
+            setNextPage(false);
+            setWheelOrArrow("arrow");
+          } else if (state.event.key === "ArrowRight") {
+            setNextPage(true);
+            setPrevPage(false);
+            setWheelOrArrow("arrow");
+          }
+        },
+      },
+      {
+        target: document.body,
+        eventOptions: { passive: false },
+      }
+    );
+  }
   return (
     <UsefulContext.Provider
       value={{

@@ -29,6 +29,8 @@ export default function SpiralPlane({ current, setCurrent }: any) {
   let offset: number = 1;
   let num = 0;
 
+  console.log(deltaX);
+
   const calcPage = (value: any, start: any, key?: any) => {
     value = nextPage ? 56 + value : value - 56;
     gsap.fromTo(
@@ -67,13 +69,11 @@ export default function SpiralPlane({ current, setCurrent }: any) {
   };
 
   const nextPageWheel = (value = 4) => {
-    if (deltaX > 100) {
-      offset = Math.floor(deltaX / 100);
-      if (offset > highNum) {
-        setHighNum(offset);
-      }
+    if (deltaX > 50) {
+      offset = Math.floor(deltaX / 20);
+      setHighNum(offset);
     }
-    if (offset > 1 && offset >= highNum) {
+    if (offset > 1) {
       num = current - value * highNum;
 
       if (num < -48) {
@@ -108,7 +108,7 @@ export default function SpiralPlane({ current, setCurrent }: any) {
         );
       }
     } else if (offset === 1) {
-      num = groupRef.current.position.x - deltaX / 100;
+      num = groupRef.current.position.x - deltaX / 50;
 
       if (current - num > 1.4) {
         if (num < -52) {
@@ -146,14 +146,12 @@ export default function SpiralPlane({ current, setCurrent }: any) {
     }
   };
   const prevPageWheel = (value = 4) => {
-    if (deltaX > 100) {
-      offset = Math.floor(deltaX / 100);
-      if (offset > highNum) {
-        setHighNum(offset);
-      }
+    if (deltaX < -50) {
+      offset = Math.floor(deltaX / 20);
+      setHighNum(offset);
     }
-    if (offset > 1 && offset >= highNum) {
-      num = current + value * offset;
+    if (offset > 1) {
+      num = current - value * offset;
       if (num > 0) {
         gsap.fromTo(
           groupRef.current.position,
@@ -180,7 +178,7 @@ export default function SpiralPlane({ current, setCurrent }: any) {
         });
       }
     } else if (offset === 1) {
-      num = groupRef.current.position.x + deltaX / 100;
+      num = groupRef.current.position.x - deltaX / 50;
 
       if (num - current > 1.4) {
         if (num > 0) {

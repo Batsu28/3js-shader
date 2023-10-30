@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useMemo } from "react";
+import { Suspense, useMemo, useRef } from "react";
 
 import { Environment, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
@@ -13,6 +13,8 @@ import SpiralPlane from "../test/textCarousel";
 
 import { BlobSetting, Titles } from "../utils/blobSettings";
 import useUsefulHooks from "../hooks/useWheel";
+import { useGesture } from "@use-gesture/react";
+import { MathUtils } from "three";
 
 const SphereCanvas = ({ current, setCurrent }: any) => {
   const { prevPage, nextPage }: any = useUsefulHooks();
